@@ -1,3 +1,4 @@
 .Rhistory
 .RData
-docs
+.emacs.desktop
+.emacs.desktop.lock
