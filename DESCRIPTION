@@ -1,0 +1,14 @@
+Package: datastore.rest
+Version: 1.0
+Title: Functions to interact with NPS IRMA/DataStore REST services
+Description: Provides a set of functions to interact with NPS IRMA
+  DataStore REST Services. See https://irmaservices.nps.gov/ for more
+  information on IRMA REST services.
+Depends: jsonlite, httr, data.table
+VignetteBuilder: knitr
+Author: Nick Bywater
+Maintainer: Nick Bywater <nicklas_bywater@nps.gov>
+License: file + LICENSE
+Suggests:
+    knitr,
+    rmarkdown

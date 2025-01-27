@@ -1,0 +1,34 @@
+---
+title: "IRMA/DataStore REST service notes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rest service notes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Rules for IRMA/DataStore Reference types
+
+Rules for Reference types: **PROGRAM**, **PROJECT**, and **PRODUCT**.
+
+**NOTE:** A 'PRODUCT' is not an actual Reference Type, but, rather, is
+a catch-all term for Reference "products" such as "Journal Article" or
+"Tabular Dataset".
+
+1. A **PROGRAM** Reference has children (project references), but not
+   projects or products.
+
+2. A **PROJECT** Reference does not have children, but it does have
+   product references.
+
+3. A **PRODUCT** Reference does not have children or products. But it
+   may belong to a project with related sibling products. That is, it
+   may "have" a node with a reference to a project and its sibling
+   products.
