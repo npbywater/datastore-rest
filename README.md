@@ -1,7 +1,7 @@
 # R package datastore.rest
 
-Provides a set of functions to interact with NPS IRMA/DataStore REST
-services. See https://irmaservices.nps.gov/ for more information on
+Provides a set of functions to interact with the NPS IRMA/DataStore REST
+services. See https://irmaservices.nps.gov/ for more information about
 IRMA REST services.
 
 # Installation
