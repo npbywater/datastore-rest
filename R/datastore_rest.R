@@ -6,14 +6,12 @@
 ## Government agency: National Park Service, CAKN
 ## License: The Unlicense (Public Domain). See: https://unlicense.org/.
 
-## PURPOSE: Provide a list of functions to retrieve all NPS IRMA
-## DataStore product Reference profiles of all project References
-## related to a program Reference. See https://irmaservices.nps.gov/
-## for more information on IRMA REST services.
+## PURPOSE: Provides a set of functions to interact with NPS
+## IRMA/DataStore REST Services. See https://irmaservices.nps.gov/ for
+## more information on IRMA REST services.
 
-## References in IRMA DataStore.
-##
 ## Rules for Reference types: PROGRAM, PROJECT, and PRODUCT.
+##
 ## NOTE: 'PRODUCT' is not an actual Reference Type, but, rather, is a
 ## catch-all term for Reference "products" such as "Journal Article"
 ## or "Tabular Dataset".
@@ -23,22 +21,20 @@
 ## (2). A PROJECT Reference does not have children, but it does have
 ##      product references.
 ## (3). A PRODUCT Reference does not have children or products. But it
-##      may belong to a project with related sibling products. That is
-##      if may "have" node with a reference to a project and its
+##      may belong to a project with related sibling products. That is,
+##      it may "have" a node with a reference to a project and its
 ##      sibling products.
 
-library(data.table)
-library(httr)
-library(jsonlite)
-
+## Service types
 PROFILE <- "profile"
-
 REFERENCE <- "reference"
 REFERENCE_COMPOSITE <- "reference_composite"
 
+## REST service URLs
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 REST_SERVICE_SECURE <- "https://irmaservices.nps.gov/datastore-secure/v7/rest/"
 
+## Authentication types
 AUTH_BASIC <- "basic"
 AUTH_NTLM <- "ntlm" ## For secure service type.
 
@@ -58,7 +54,7 @@ get_content_as_list <- function(ref_ids,
 
 ## Returns the request for a particular REST URL and authentication.
 ## Parameter(s):
-##   ref_ids: a vector of DataStore Reference IDs.
+##   ref_ids: a vector string of DataStore Reference IDs.
 ##   service_type: a REST service-type (e.g. REFERENCE, PROFILE, etc.)
 ##     as defined by global constants.
 ##   rest_service: a REST URL for the DataStore REST services as
@@ -66,11 +62,7 @@ get_content_as_list <- function(ref_ids,
 ##   auth_type: authentication-type as defined by global constants.
 ##     - AUTH_BASIC is for public REST service.
 ##     - AUTH_NTLM is for secure REST servics.
-get_request_by_ref_ids <- function(ref_ids,
-                                   service_type,
-                                   rest_service,
-                                   auth_type) {
-
+get_request_by_ref_ids <- function(ref_ids, service_type, rest_service, auth_type) {
     if (service_type == REFERENCE) {
         ref_url <- paste0(rest_service, "ReferenceCodeSearch?q=", ref_ids)
     } else if (service_type == REFERENCE_COMPOSITE) {
@@ -124,23 +116,14 @@ get_content <- function(req, simplify_to_df = TRUE) {
 ##       'fromJSON') to data.frames causes us problems for project
 ##       profiles when chunking up to 25 profiles at a time; so we
 ##       return just a list without data.frame coercion.
-get_program_project_profiles <- function(program_ref_id,
-                                         rest_service,
-                                         auth_type) {
+get_program_project_profiles <- function(program_ref_id, rest_service, auth_type) {
 
-    program <- get_content_as_list(program_ref_id,
-                                   PROFILE,
-                                   rest_service,
-                                   auth_type,
-                                   simplify_to_df=TRUE)
+    program <- get_content_as_list(program_ref_id, PROFILE, rest_service, auth_type, simplify_to_df=TRUE)
 
     projects_df <- program$children[[1]]
     project_ref_ids <- projects_df$referenceId
 
-    project_profiles <- get_ref_profiles(project_ref_ids,
-                                         rest_service,
-                                         auth_type,
-                                         simplify_to_df=FALSE)
+    project_profiles <- get_ref_profiles(project_ref_ids, rest_service, auth_type, simplify_to_df=FALSE)
 
     class(project_profiles) <- "project"
 
@@ -159,7 +142,7 @@ get_program_project_profiles <- function(program_ref_id,
 ## NOTES:
 ##   The products list elements 'units' and 'linkedResources' are
 ##   collapsed into a comma separted string for convenience.
-combine_project_products_into_dt <- function(project_profiles) {
+project_profiles_to_products_dt <- function(project_profiles) {
     products_list <- list()
 
     if (! isa(project_profiles, "project")) {
@@ -202,7 +185,7 @@ combine_project_products_into_dt <- function(project_profiles) {
                 product$linkedResources <- lr_list_to_vector_str(product)
                 product$units <- units_vector_to_vector_str(product)
 
-                dt_list[[m]] <- as.data.table(product)
+                dt_list[[m]] <- data.table::as.data.table(product)
 
                 dt_list[[m]][, c("project_reference_id", "project_title") :=
                                    .(project_list$referenceId,
@@ -213,15 +196,12 @@ combine_project_products_into_dt <- function(project_profiles) {
         }
     }
 
-    return(rbindlist(dt_list, fill=TRUE))
+    return(data.table::rbindlist(dt_list, fill=TRUE))
 }
 
 ## Return a list of REFERENCE-PROFILES (as specified by DataStore
 ## API), when provided a vector of Reference IDs.
-get_ref_profiles <- function(ref_ids,
-                             rest_service,
-                             auth_type,
-                             simplify_to_df=FALSE) {
+get_ref_profiles <- function(ref_ids, rest_service, auth_type, simplify_to_df=FALSE) {
 
     profile_list <- list()
 
@@ -232,10 +212,7 @@ get_ref_profiles <- function(ref_ids,
     i <- 1
 
     for (ref_ids in ref_id_groups) {
-        profiles <- get_ref_profiles_by_ids(ref_ids,
-                                            rest_service,
-                                            auth_type,
-                                            simplify_to_df)
+        profiles <- get_ref_profiles_by_ids(ref_ids, rest_service, auth_type, simplify_to_df)
         profile_list[[i]] <- profiles
         i = i + 1
     }
@@ -243,16 +220,9 @@ get_ref_profiles <- function(ref_ids,
     return(profile_list)
 }
 
-get_ref_profiles_by_ids <- function(ref_ids,
-                                    rest_service,
-                                    auth_type,
-                                    simplify_to_df=TRUE) {
+get_ref_profiles_by_ids <- function(ref_ids, rest_service, auth_type, simplify_to_df=TRUE) {
 
-    profile <- get_content_as_list(ref_ids,
-                                   PROFILE,
-                                   rest_service,
-                                   auth_type,
-                                   simplify_to_df)
+    profile <- get_content_as_list(ref_ids, PROFILE, rest_service, auth_type, simplify_to_df)
 
     return(profile)
 }
@@ -291,10 +261,7 @@ group_ref_ids <- function(ref_ids) {
 ##
 ## Parameter(s):
 ##   ref_ids: a vector of REFERENCE-IDs in DataStore.
-get_refs_by_ref_search <- function(ref_ids,
-                                   rest_service,
-                                   auth_type,
-                                   simplify_to_df=TRUE) {
+get_refs_by_ref_search <- function(ref_ids, rest_service, auth_type, simplify_to_df=TRUE) {
 
     reference_list <- list()
 
@@ -304,11 +271,7 @@ get_refs_by_ref_search <- function(ref_ids,
 
     i <- 1
     for (ref_ids in ref_id_groups) {
-        reference <- get_content_as_list(ref_ids,
-                                         REFERENCE,
-                                         rest_service,
-                                         auth_type,
-                                         simplify_to_df)
+        reference <- get_content_as_list(ref_ids, REFERENCE, rest_service, auth_type, simplify_to_df)
 
         if (! is.null(reference$referenceId)) {
             reference_list[[i]] <- reference
@@ -316,17 +279,17 @@ get_refs_by_ref_search <- function(ref_ids,
         }
     }
 
-    return(rbindlist(reference_list))
+    return(data.table::rbindlist(reference_list))
 }
 
 ## Write data.table to CSV file.
 write_dt_to_csv_file <- function(product_refs, file_name) {
     product_refs_str <- data.frame(lapply(product_refs, as.character), stringsAsFactors=FALSE)
-    fwrite(product_refs_str, file_name, qmethod="double", quote=TRUE)
+    data.table::fwrite(product_refs_str, file_name, qmethod="double", quote=TRUE)
 }
 
 ## Read CSV file into data.table.
 read_dt_from_csv_file <- function(file_name) {
-    dt <- fread(file=file_name)
+    dt <- data.table::fread(file=file_name)
     return(dt)
 }
