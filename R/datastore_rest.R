@@ -30,9 +30,8 @@ PROFILE <- "profile"
 REFERENCE <- "reference"
 REFERENCE_COMPOSITE <- "reference_composite"
 
-## REST service URLs
+## REST service URL
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
-REST_SERVICE_SECURE <- "https://irmaservices.nps.gov/datastore-secure/v7/rest/"
 
 ## Authentication types
 AUTH_BASIC <- "basic"
@@ -63,6 +62,7 @@ get_content_as_list <- function(ref_ids,
 ##     - AUTH_BASIC is for public REST service.
 ##     - AUTH_NTLM is for secure REST servics.
 get_request_by_ref_ids <- function(ref_ids, service_type, rest_service, auth_type) {
+
     if (service_type == REFERENCE) {
         ref_url <- paste0(rest_service, "ReferenceCodeSearch?q=", ref_ids)
     } else if (service_type == REFERENCE_COMPOSITE) {
@@ -77,6 +77,21 @@ get_request_by_ref_ids <- function(ref_ids, service_type, rest_service, auth_typ
 }
 
 get_request <- function(ref_url, auth_type) {
+
+    if (! xor((AUTH_NTLM == auth_type), (AUTH_BASIC == auth_type))) {
+        stop("The authentication type must be 'basic' or 'ntml'.")
+    }
+
+    if (AUTH_NTLM == auth_type) {
+        if (length(grep("/datastore-secure/", ref_url)) == 0) {
+            stop("The URL format for 'ntlm' authentication is incorrect.")
+        }
+    } else if (AUTH_BASIC == auth_type) {
+        if (length(grep("/datastore/", ref_url)) == 0) {
+            stop("The URL format for 'basic' authentication is incorrect.")
+        }
+    }
+
     req <- httr::GET(ref_url, httr::authenticate(":", ":", auth_type))
     status_code <- httr::stop_for_status(req)$status_code
 
@@ -92,6 +107,7 @@ get_request <- function(ref_url, auth_type) {
 ##   simplify_to_df: this value is passed to the 'simplifyDataFrame'
 ##     parameter of the function 'fromJSON'.
 get_content <- function(req, simplify_to_df = TRUE) {
+
     json <- httr::content(req, "text")
     json_lite <- jsonlite::fromJSON(json, simplifyDataFrame=simplify_to_df)
 
@@ -143,6 +159,7 @@ get_program_project_profiles <- function(program_ref_id, rest_service, auth_type
 ##   The products list elements 'units' and 'linkedResources' are
 ##   collapsed into a comma separted string for convenience.
 project_profiles_to_products_dt <- function(project_profiles) {
+
     products_list <- list()
 
     if (! isa(project_profiles, "project")) {
@@ -233,6 +250,7 @@ get_ref_profiles_by_ids <- function(ref_ids, rest_service, auth_type, simplify_t
 ## REST services such as PROFILE and REFERENCE and
 ## REFERENCE_COMPOSITE.
 group_ref_ids <- function(ref_ids) {
+
     from <- 1
     to <- 25
     ref_id_count <- length(ref_ids)
