@@ -13,10 +13,8 @@ get_request_by_ref_ids(ref_ids, service_type, rest_service, auth_type)
   \item{service_type}{a REST service-type. Values accepted:
     (\code{profile}, \code{reference}, or \code{reference_composite}).}
   \item{rest_service}{a REST URL for the IRMA/DataStore REST services.}
-  \item{auth_type}{same values as argument \code{type} in function
-    \code{httr::authenticate}. "Should be one of the following types
-    supported by Curl: basic, digest, digest_ie, gssnegotiate, ntlm, any. It
-    defaults to 'basic', the most common type."}
+  \item{auth_type}{one of the following types supported by
+    Curl: \code{basic} or \code{ntlm}.}
 }
 \value{
 
@@ -25,9 +23,10 @@ get_request_by_ref_ids(ref_ids, service_type, rest_service, auth_type)
 
 REST service URLs. See \code{https://irmaservices.nps.gov/}.
 
-\code{"https://irmaservices.nps.gov/datastore/v7/rest/"}
+\code{https://irmaservices.nps.gov/datastore/v7/rest/} (public)
 
-\code{"https://irmaservices.nps.gov/datastore-secure/v7/rest/"}
+\code{https://irmaservices.nps.gov/datastore-secure/v7/rest/}
+(requires authentication type 'ntlm')
 
 }
 \examples{

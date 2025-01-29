@@ -12,10 +12,8 @@ get_program_project_profiles(program_ref_id, rest_service, auth_type)
   \item{program_ref_id}{a PROGRAM-REFERENCE-ID in DataStore. For
     example, the CAKN program Reference ID 2210836.}
   \item{rest_service}{a REST URL for the IRMA/DataStore REST services.}
-  \item{auth_type}{same values as argument \code{type} in function
-    \code{httr::authenticate}. "Should be one of the following types
-    supported by Curl: basic, digest, digest_ie, gssnegotiate, ntlm, any. It
-    defaults to 'basic', the most common type."}
+  \item{auth_type}{one of the following types supported by
+    Curl: \code{basic} or \code{ntlm}.}
 }
 
 \value{
@@ -41,9 +39,10 @@ NOTE: The automatic coercion of JSON arrays (via function
 
 REST service URLs. See \code{https://irmaservices.nps.gov/}.
 
-\code{https://irmaservices.nps.gov/datastore/v7/rest/}
+\code{https://irmaservices.nps.gov/datastore/v7/rest/} (public)
 
 \code{https://irmaservices.nps.gov/datastore-secure/v7/rest/}
+(requires authentication type 'ntlm')
 }
 
 \examples{
