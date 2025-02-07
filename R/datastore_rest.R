@@ -1,5 +1,5 @@
 ## datastore_rest.R
-## Version 1.0
+## Version 1.1, 2025-February
 ## Initial release month: 2025-January
 
 ## Created by: Nick Bywater

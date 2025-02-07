@@ -1,5 +1,5 @@
 Package: datastore.rest
-Version: 1.0
+Version: 1.1
 Title: Functions to interact with NPS IRMA/DataStore REST services
 Description: Provides a set of functions to interact with NPS IRMA
   DataStore REST Services. See https://irmaservices.nps.gov/ for more
