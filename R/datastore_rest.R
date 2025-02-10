@@ -41,31 +41,31 @@ AUTH_NTLM <- "ntlm" ## For secure service type.
 ## converted to content by the jsonlite::fromJSON function.
 get_refs_content_as_list <- function(ref_ids,
                                      rest_rsrc_type = REF_PROFILE,
-                                     rest_service = REST_SERVICE_PUBLIC,
+                                     rest_svc_url = REST_SERVICE_PUBLIC,
                                      auth_type = AUTH_BASIC) {
 
-    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_service, auth_type, simplify_to_df=FALSE)
+    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, auth_type, simplify_to_df=FALSE)
 
     return(content)
 }
 
 get_refs_content_as_df <- function(ref_ids,
                                    rest_rsrc_type = REF_PROFILE,
-                                   rest_service = REST_SERVICE_PUBLIC,
+                                   rest_svc_url = REST_SERVICE_PUBLIC,
                                    auth_type = AUTH_BASIC) {
 
-    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_service, auth_type, simplify_to_df=TRUE)
+    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, auth_type, simplify_to_df=TRUE)
 
     return(content)
 }
 
 get_refs_content <- function(ref_ids,
                              rest_rsrc_type = REF_PROFILE,
-                             rest_service = REST_SERVICE_PUBLIC,
+                             rest_svc_url = REST_SERVICE_PUBLIC,
                              auth_type = AUTH_BASIC,
                              simplify_to_df=TRUE) {
 
-    req <- get_request_by_ref_ids(ref_ids, rest_rsrc_type, rest_service, auth_type)
+    req <- get_request_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
     content <- get_content(req, simplify_to_df)
 
     return(content)
@@ -76,19 +76,19 @@ get_refs_content <- function(ref_ids,
 ##   ref_ids: a vector string of DataStore Reference IDs.
 ##   rest_rsrc_type: a REST service-type (e.g. REF_CODE_SEARCH, REF_PROFILE, etc.)
 ##     as defined by global constants.
-##   rest_service: a REST URL for the DataStore REST services as
+##   rest_svc_url: a REST URL for the DataStore REST services as
 ##     defined by global constants.
 ##   auth_type: authentication-type as defined by global constants.
 ##     - AUTH_BASIC is for public REST service.
 ##     - AUTH_NTLM is for secure REST servics.
-get_request_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_service, auth_type) {
+get_request_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url, auth_type) {
 
     if (rest_rsrc_type == REF_CODE_SEARCH) {
-        ref_url <- paste0(rest_service, "ReferenceCodeSearch?q=", ref_ids)
+        ref_url <- paste0(rest_svc_url, "ReferenceCodeSearch?q=", ref_ids)
     } else if (rest_rsrc_type == REF_CODE_SEARCH_COMP) {
-        ref_url <- paste0(rest_service, "ReferenceCodeSearch/Composite?q=", ref_ids)
+        ref_url <- paste0(rest_svc_url, "ReferenceCodeSearch/Composite?q=", ref_ids)
     } else if (rest_rsrc_type == REF_PROFILE) {
-        ref_url <- paste0(rest_service, "Profile?q=", ref_ids)
+        ref_url <- paste0(rest_svc_url, "Profile?q=", ref_ids)
     }
 
     req <- get_request(ref_url, auth_type)
@@ -134,9 +134,9 @@ get_content <- function(req, simplify_to_df = TRUE) {
     return(json_lite)
 }
 
-get_program_profile <- function(program_ref_id, rest_service, auth_type, simplify_to_df=TRUE) {
+get_program_profile <- function(program_ref_id, rest_svc_url, auth_type, simplify_to_df=TRUE) {
 
-    program_profile <- get_refs_content(program_ref_id, REF_PROFILE, rest_service, auth_type)
+    program_profile <- get_refs_content(program_ref_id, REF_PROFILE, rest_svc_url, auth_type)
 
     if (! is_program_profile(program_profile)) {
         stop("The value of program_ref_id is not a program Reference ID!")
@@ -180,14 +180,14 @@ is_program_profile <- function(program_profile) {
 ##       'fromJSON') to data.frames causes us problems for project
 ##       profiles when chunking up to 25 profiles at a time; so we
 ##       return just a list without data.frame coercion.
-get_program_project_profiles <- function(program_ref_id, rest_service, auth_type) {
+get_program_project_profiles <- function(program_ref_id, rest_svc_url, auth_type) {
 
-    program <- get_program_profile(program_ref_id, rest_service, auth_type)
+    program <- get_program_profile(program_ref_id, rest_svc_url, auth_type)
 
     projects_df <- program$children[[1]]
     project_ref_ids <- projects_df$referenceId
 
-    project_profiles <- get_ref_profiles(project_ref_ids, rest_service, auth_type, simplify_to_df=FALSE)
+    project_profiles <- get_ref_profiles(project_ref_ids, rest_svc_url, auth_type, simplify_to_df=FALSE)
 
     class(project_profiles) <- "project"
 
@@ -266,7 +266,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
 
 ## Return a list of REFERENCE-PROFILES (as specified by DataStore
 ## API), when provided a vector of Reference IDs.
-get_ref_profiles <- function(ref_ids, rest_service, auth_type, simplify_to_df=FALSE) {
+get_ref_profiles <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=FALSE) {
 
     profile_list <- list()
 
@@ -277,7 +277,7 @@ get_ref_profiles <- function(ref_ids, rest_service, auth_type, simplify_to_df=FA
     i <- 1
 
     for (ref_ids in ref_id_groups) {
-        profiles <- get_ref_profiles_by_ids(ref_ids, rest_service, auth_type, simplify_to_df)
+        profiles <- get_ref_profiles_by_ids(ref_ids, rest_svc_url, auth_type, simplify_to_df)
         profile_list[[i]] <- profiles
         i = i + 1
     }
@@ -285,9 +285,9 @@ get_ref_profiles <- function(ref_ids, rest_service, auth_type, simplify_to_df=FA
     return(profile_list)
 }
 
-get_ref_profiles_by_ids <- function(ref_ids, rest_service, auth_type, simplify_to_df=TRUE) {
+get_ref_profiles_by_ids <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=TRUE) {
 
-    profile <- get_refs_content(ref_ids, REF_PROFILE, rest_service, auth_type, simplify_to_df)
+    profile <- get_refs_content(ref_ids, REF_PROFILE, rest_svc_url, auth_type, simplify_to_df)
 
     return(profile)
 }
@@ -327,7 +327,7 @@ group_ref_ids <- function(ref_ids) {
 ##
 ## Parameter(s):
 ##   ref_ids: a vector of REFERENCE-IDs in DataStore.
-get_refs_by_ref_search <- function(ref_ids, rest_service, auth_type, simplify_to_df=TRUE) {
+get_refs_by_ref_search <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=TRUE) {
 
     reference_list <- list()
 
@@ -337,7 +337,7 @@ get_refs_by_ref_search <- function(ref_ids, rest_service, auth_type, simplify_to
 
     i <- 1
     for (ref_ids in ref_id_groups) {
-        reference <- get_refs_content(ref_ids, REF_CODE_SEARCH, rest_service, auth_type, simplify_to_df)
+        reference <- get_refs_content(ref_ids, REF_CODE_SEARCH, rest_svc_url, auth_type, simplify_to_df)
 
         if (! is.null(reference$referenceId)) {
             reference_list[[i]] <- reference
