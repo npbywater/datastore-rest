@@ -40,32 +40,32 @@ AUTH_NTLM <- "ntlm" ## For secure service type.
 ## Returns a list of values that for a given REST request are
 ## converted to content by the jsonlite::fromJSON function.
 get_refs_content_as_list <- function(ref_ids,
-                                     service_type = REF_PROFILE,
+                                     rest_rsrc_type = REF_PROFILE,
                                      rest_service = REST_SERVICE_PUBLIC,
                                      auth_type = AUTH_BASIC) {
 
-    content <- get_refs_content(ref_ids, service_type, rest_service, auth_type, simplify_to_df=FALSE)
+    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_service, auth_type, simplify_to_df=FALSE)
 
     return(content)
 }
 
 get_refs_content_as_df <- function(ref_ids,
-                                   service_type = REF_PROFILE,
+                                   rest_rsrc_type = REF_PROFILE,
                                    rest_service = REST_SERVICE_PUBLIC,
                                    auth_type = AUTH_BASIC) {
 
-    content <- get_refs_content(ref_ids, service_type, rest_service, auth_type, simplify_to_df=TRUE)
+    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_service, auth_type, simplify_to_df=TRUE)
 
     return(content)
 }
 
 get_refs_content <- function(ref_ids,
-                             service_type = REF_PROFILE,
+                             rest_rsrc_type = REF_PROFILE,
                              rest_service = REST_SERVICE_PUBLIC,
                              auth_type = AUTH_BASIC,
                              simplify_to_df=TRUE) {
 
-    req <- get_request_by_ref_ids(ref_ids, service_type, rest_service, auth_type)
+    req <- get_request_by_ref_ids(ref_ids, rest_rsrc_type, rest_service, auth_type)
     content <- get_content(req, simplify_to_df)
 
     return(content)
@@ -74,20 +74,20 @@ get_refs_content <- function(ref_ids,
 ## Returns the request for a particular REST URL and authentication.
 ## Parameter(s):
 ##   ref_ids: a vector string of DataStore Reference IDs.
-##   service_type: a REST service-type (e.g. REF_CODE_SEARCH, REF_PROFILE, etc.)
+##   rest_rsrc_type: a REST service-type (e.g. REF_CODE_SEARCH, REF_PROFILE, etc.)
 ##     as defined by global constants.
 ##   rest_service: a REST URL for the DataStore REST services as
 ##     defined by global constants.
 ##   auth_type: authentication-type as defined by global constants.
 ##     - AUTH_BASIC is for public REST service.
 ##     - AUTH_NTLM is for secure REST servics.
-get_request_by_ref_ids <- function(ref_ids, service_type, rest_service, auth_type) {
+get_request_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_service, auth_type) {
 
-    if (service_type == REF_CODE_SEARCH) {
+    if (rest_rsrc_type == REF_CODE_SEARCH) {
         ref_url <- paste0(rest_service, "ReferenceCodeSearch?q=", ref_ids)
-    } else if (service_type == REF_CODE_SEARCH_COMP) {
+    } else if (rest_rsrc_type == REF_CODE_SEARCH_COMP) {
         ref_url <- paste0(rest_service, "ReferenceCodeSearch/Composite?q=", ref_ids)
-    } else if (service_type == REF_PROFILE) {
+    } else if (rest_rsrc_type == REF_PROFILE) {
         ref_url <- paste0(rest_service, "Profile?q=", ref_ids)
     }
 
