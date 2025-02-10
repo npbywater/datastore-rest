@@ -10,9 +10,9 @@ vignette: >
 
 
 
-``` r
+```r
 ## example_script.R
-## Version 1.0
+## Version 1.1, 2025-February
 ## Initial release month: 2025-January
 
 ## Created by: Nick Bywater
@@ -21,12 +21,12 @@ vignette: >
 
 library(datastore.rest)
 
-write_program_ref_product_profiles <- function(program_ref_id, rest_service, auth_type) {
+write_program_ref_product_profiles <- function(program_ref_id, rest_svc_url, auth_type) {
 
     cat(paste0("Collecting PROGRAM-REFERENCE-ID '", program_ref_id, "' PROJECT-REFERENCE-PROFILEs...\n"))
 
     project_profiles <- get_program_project_profiles(program_ref_id,
-                                                     rest_service,
+                                                     rest_svc_url,
                                                      auth_type)
 
     cat(paste0("Collecting PROJECT-PRODUCT-REFERENCE-PROFILES...\n"))
@@ -37,7 +37,7 @@ write_program_ref_product_profiles <- function(program_ref_id, rest_service, aut
     cat(paste0("Collecting PROJECT-PRODUCT-REFERENCE-PROFILES-BY-REFERENCE-SEARCH...\n"))
 
     project_product_profiles_by_ref_search <- get_refs_by_ref_search(project_product_refs,
-                                                                     rest_service,
+                                                                     rest_svc_url,
                                                                      auth_type)
 
     ## Remove the 'linkedResources' column. Should probably be parsed
