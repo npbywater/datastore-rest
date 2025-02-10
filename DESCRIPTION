@@ -11,4 +11,5 @@ Maintainer: Nick Bywater <nicklas_bywater@nps.gov>
 License: file + LICENSE
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    tinytest
