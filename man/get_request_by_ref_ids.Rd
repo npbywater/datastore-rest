@@ -10,8 +10,8 @@ get_request_by_ref_ids(ref_ids, service_type, rest_service, auth_type)
 \arguments{
   \item{ref_ids}{a vector string of DataStore Reference IDs. E.g.
     "2305721, 2182981".}
-  \item{service_type}{a REST service-type. Values accepted:
-    (\code{profile}, \code{reference}, or \code{reference_composite}).}
+  \item{service_type}{a REST Api (service) type. Values accepted:
+    ("ref_profile", "ref_code_search", or "ref_composite").}
   \item{rest_service}{a REST URL for the IRMA/DataStore REST services.}
   \item{auth_type}{one of the following types supported by
     Curl: \code{basic} or \code{ntlm}.}
@@ -21,23 +21,32 @@ get_request_by_ref_ids(ref_ids, service_type, rest_service, auth_type)
 }
 \details{
 
-REST service URLs. See \code{https://irmaservices.nps.gov/}.
+  The service types correspond to the following REST Api(s):
 
-\code{https://irmaservices.nps.gov/datastore/v7/rest/} (public)
+  ref_profile: \code{/rest/Profile}
 
-\code{https://irmaservices.nps.gov/datastore-secure/v7/rest/}
-(requires authentication type 'ntlm')
+  ref_code_search: \code{/rest/ReferenceCodeSearch}
+
+  ref_code_search_comp: \code{/rest/ReferenceCodeSearch/Composite}
+
+  REST service URLs. See \code{https://irmaservices.nps.gov/}.
+
+  \code{https://irmaservices.nps.gov/datastore/v7/rest/} (public)
+
+  \code{https://irmaservices.nps.gov/datastore-secure/v7/rest/}
+  (requires authentication type 'ntlm')
 
 }
 \examples{
-REFERENCE = "reference"
+\dontrun{
+REF_CODE_SEARCH = "ref_code_search"
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 AUTH_BASIC <- "basic"
 
 ref_ids <- paste0(c(2305721, 2182981), collapse=",")
 
-get_request_by_ref_ids(ref_ids, REFERENCE, REST_SERVICE_PUBLIC, AUTH_BASIC)
-
+get_request_by_ref_ids(ref_ids, REF_CODE_SEARCH, REST_SERVICE_PUBLIC, AUTH_BASIC)
+}
 }
 \author{Nick Bywater}
 \keyword{}

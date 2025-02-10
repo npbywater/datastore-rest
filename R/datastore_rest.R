@@ -25,10 +25,10 @@
 ##      it may "have" a node with a reference to a project and its
 ##      sibling products.
 
-## Service types
-PROFILE <- "profile"
-REFERENCE <- "reference"
-REFERENCE_COMPOSITE <- "reference_composite"
+## REST resource types
+REF_PROFILE <- "ref_profile" # /rest/Profile
+REF_CODE_SEARCH <- "ref_code_search" # /rest/ReferenceCodeSearch
+REF_CODE_SEARCH_COMP <- "ref_code_search_comp" # /rest/ReferenceCodeSearch/Composite
 
 ## REST service URL
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
@@ -54,7 +54,7 @@ get_content_as_list <- function(ref_ids,
 ## Returns the request for a particular REST URL and authentication.
 ## Parameter(s):
 ##   ref_ids: a vector string of DataStore Reference IDs.
-##   service_type: a REST service-type (e.g. REFERENCE, PROFILE, etc.)
+##   service_type: a REST service-type (e.g. REF_CODE_SEARCH, REF_PROFILE, etc.)
 ##     as defined by global constants.
 ##   rest_service: a REST URL for the DataStore REST services as
 ##     defined by global constants.
@@ -63,11 +63,11 @@ get_content_as_list <- function(ref_ids,
 ##     - AUTH_NTLM is for secure REST servics.
 get_request_by_ref_ids <- function(ref_ids, service_type, rest_service, auth_type) {
 
-    if (service_type == REFERENCE) {
+    if (service_type == REF_CODE_SEARCH) {
         ref_url <- paste0(rest_service, "ReferenceCodeSearch?q=", ref_ids)
-    } else if (service_type == REFERENCE_COMPOSITE) {
+    } else if (service_type == REF_CODE_SEARCH_COMP) {
         ref_url <- paste0(rest_service, "ReferenceCodeSearch/Composite?q=", ref_ids)
-    } else if (service_type == PROFILE) {
+    } else if (service_type == REF_PROFILE) {
         ref_url <- paste0(rest_service, "Profile?q=", ref_ids)
     }
 
@@ -239,7 +239,7 @@ get_ref_profiles <- function(ref_ids, rest_service, auth_type, simplify_to_df=FA
 
 get_ref_profiles_by_ids <- function(ref_ids, rest_service, auth_type, simplify_to_df=TRUE) {
 
-    profile <- get_content_as_list(ref_ids, PROFILE, rest_service, auth_type, simplify_to_df)
+    profile <- get_refs_content(ref_ids, REF_PROFILE, rest_service, auth_type, simplify_to_df)
 
     return(profile)
 }
@@ -247,8 +247,8 @@ get_ref_profiles_by_ids <- function(ref_ids, rest_service, auth_type, simplify_t
 ## Split a vector of REFERENCE-IDs into a list of vectors, where each
 ## vector is a string of, at most, 25 comma-separated REFERENCE-IDs. We
 ## can then provide these comma separated strings of REFERENCE-IDs to
-## REST services such as PROFILE and REFERENCE and
-## REFERENCE_COMPOSITE.
+## REST services such as REF_PROFILE and REF_CODE_SEARCH and
+## REF_CODE_SEARCH_COMP.
 group_ref_ids <- function(ref_ids) {
 
     from <- 1
