@@ -33,6 +33,7 @@ NOTE: The product-list elements 'units' and 'linkedResources' are
 }
 
 \examples{
+\dontrun{
 CAKN_PROGRAM_REF_ID <- 2210836
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 AUTH_BASIC <- "basic"
@@ -42,7 +43,7 @@ project_profiles <- get_program_project_profiles(CAKN_PROGRAM_REF_ID, REST_SERVI
 project_products <- project_profiles_to_products_dt(project_profiles)
 
 head(project_products)
-
+}
 }
 \author{Nick Bywater}
 \keyword{}

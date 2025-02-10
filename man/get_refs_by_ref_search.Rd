@@ -7,13 +7,14 @@ Returns Reference Profiles by REST URL query
 \code{ReferenceCodeSearch?=} from IRMA/DataStore.
 }
 \usage{
-get_refs_by_ref_search(ref_ids, service_type, rest_service, auth_type)
+get_refs_by_ref_search(ref_ids, rest_service, auth_type, simplify_to_df=TRUE)
 }
 \arguments{
   \item{ref_ids}{a vector of DataStore REFERENCE-IDs.}
   \item{rest_service}{a REST URL for the IRMA/DataStore REST services.}
   \item{auth_type}{one of the following types supported by
     Curl: \code{basic} or \code{ntlm}.}
+  \item{simplify_to_df}{}
 }
 \value{
 
@@ -34,12 +35,13 @@ REST service URLs. See \code{https://irmaservices.nps.gov/}.
 
 }
 \examples{
-REFERENCE = "reference"
+\dontrun{
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 AUTH_BASIC <- "basic"
 
 get_refs_by_ref_search(c(2305721, 2182981), REST_SERVICE_PUBLIC, AUTH_BASIC)
-
 }
+}
+
 \author{Nick Bywater}
 \keyword{}

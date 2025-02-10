@@ -46,6 +46,7 @@ REST service URLs. See \code{https://irmaservices.nps.gov/}.
 }
 
 \examples{
+\dontrun{
 CAKN_PROGRAM_REF_ID <- 2210836
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 AUTH_BASIC <- "basic"
@@ -57,7 +58,7 @@ first_project <- head(program_project_profiles[[1]],1)
 
 # Get all products for first project.
 first_project[[1]]$products
-
+}
 }
 \author{Nick Bywater}
 \keyword{}
