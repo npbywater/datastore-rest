@@ -151,11 +151,11 @@ is_program_profile <- function(program_profile) {
 
     if (is.data.frame(program_profile)) {
         if (program_profile$referenceType == "Program"){
-           ret <- TRUE
+            ret <- TRUE
         }
     } else if (is.list(program_profile)) {
         if (program_profile[[1]]$referenceType == "Program"){
-           ret <- TRUE
+            ret <- TRUE
         }
     }
 
