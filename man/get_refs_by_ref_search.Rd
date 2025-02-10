@@ -7,11 +7,11 @@ Returns Reference Profiles by REST URL query
 \code{ReferenceCodeSearch?=} from IRMA/DataStore.
 }
 \usage{
-get_refs_by_ref_search(ref_ids, rest_service, auth_type, simplify_to_df=TRUE)
+get_refs_by_ref_search(ref_ids, rest_svc_url, auth_type, simplify_to_df=TRUE)
 }
 \arguments{
   \item{ref_ids}{a vector of DataStore REFERENCE-IDs.}
-  \item{rest_service}{a REST URL for the IRMA/DataStore REST services.}
+  \item{rest_svc_url}{a REST URL for the IRMA/DataStore REST services.}
   \item{auth_type}{one of the following types supported by
     Curl: \code{basic} or \code{ntlm}.}
   \item{simplify_to_df}{}

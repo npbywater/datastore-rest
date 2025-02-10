@@ -6,12 +6,12 @@
   REST service URL query: \code{Profile?q=}.
 }
 \usage{
-get_program_project_profiles(program_ref_id, rest_service, auth_type)
+get_program_project_profiles(program_ref_id, rest_svc_url, auth_type)
 }
 \arguments{
   \item{program_ref_id}{a PROGRAM-REFERENCE-ID in DataStore. For
     example, the CAKN program Reference ID 2210836.}
-  \item{rest_service}{a REST URL for the IRMA/DataStore REST services.}
+  \item{rest_svc_url}{a REST URL for the IRMA/DataStore REST services.}
   \item{auth_type}{one of the following types supported by
     Curl: \code{basic} or \code{ntlm}.}
 }

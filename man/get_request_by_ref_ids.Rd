@@ -5,14 +5,14 @@
 Returns the GET request for a particular REST URL and authentication.
 }
 \usage{
-get_request_by_ref_ids(ref_ids, service_type, rest_service, auth_type)
+get_request_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
 }
 \arguments{
   \item{ref_ids}{a vector string of DataStore Reference IDs. E.g.
     "2305721, 2182981".}
-  \item{service_type}{a REST Api (service) type. Values accepted:
+  \item{rest_rsrc_type}{a REST Api (service) type. Values accepted:
     ("ref_profile", "ref_code_search", or "ref_composite").}
-  \item{rest_service}{a REST URL for the IRMA/DataStore REST services.}
+  \item{rest_svc_url}{a REST URL for the IRMA/DataStore REST services.}
   \item{auth_type}{one of the following types supported by
     Curl: \code{basic} or \code{ntlm}.}
 }
