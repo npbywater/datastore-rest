@@ -134,6 +134,34 @@ get_content <- function(req, simplify_to_df = TRUE) {
     return(json_lite)
 }
 
+get_program_profile <- function(program_ref_id, rest_service, auth_type, simplify_to_df=TRUE) {
+
+    program_profile <- get_refs_content(program_ref_id, REF_PROFILE, rest_service, auth_type)
+
+    if (! is_program_profile(program_profile)) {
+        stop("The value of program_ref_id is not a program Reference ID!")
+    }
+
+    return(program_profile)
+}
+
+is_program_profile <- function(program_profile) {
+
+    ret <- FALSE
+
+    if (is.data.frame(program_profile)) {
+        if (program_profile$referenceType == "Program"){
+           ret <- TRUE
+        }
+    } else if (is.list(program_profile)) {
+        if (program_profile[[1]]$referenceType == "Program"){
+           ret <- TRUE
+        }
+    }
+
+    return(ret)
+}
+
 ## Return a list of PROJECT-REFERENCE-PROFILEs called by REST service
 ## URL query: Profile?q=.
 ##
@@ -154,7 +182,7 @@ get_content <- function(req, simplify_to_df = TRUE) {
 ##       return just a list without data.frame coercion.
 get_program_project_profiles <- function(program_ref_id, rest_service, auth_type) {
 
-    program <- get_content_as_list(program_ref_id, PROFILE, rest_service, auth_type, simplify_to_df=TRUE)
+    program <- get_program_profile(program_ref_id, rest_service, auth_type)
 
     projects_df <- program$children[[1]]
     project_ref_ids <- projects_df$referenceId
