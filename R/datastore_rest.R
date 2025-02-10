@@ -39,11 +39,31 @@ AUTH_NTLM <- "ntlm" ## For secure service type.
 
 ## Returns a list of values that for a given REST request are
 ## converted to content by the jsonlite::fromJSON function.
-get_content_as_list <- function(ref_ids,
-                                service_type = PROFILE,
-                                rest_service = REST_SERVICE_PUBLIC,
-                                auth_type = AUTH_BASIC,
-                                simplify_to_df = TRUE) {
+get_refs_content_as_list <- function(ref_ids,
+                                     service_type = REF_PROFILE,
+                                     rest_service = REST_SERVICE_PUBLIC,
+                                     auth_type = AUTH_BASIC) {
+
+    content <- get_refs_content(ref_ids, service_type, rest_service, auth_type, simplify_to_df=FALSE)
+
+    return(content)
+}
+
+get_refs_content_as_df <- function(ref_ids,
+                                   service_type = REF_PROFILE,
+                                   rest_service = REST_SERVICE_PUBLIC,
+                                   auth_type = AUTH_BASIC) {
+
+    content <- get_refs_content(ref_ids, service_type, rest_service, auth_type, simplify_to_df=TRUE)
+
+    return(content)
+}
+
+get_refs_content <- function(ref_ids,
+                             service_type = REF_PROFILE,
+                             rest_service = REST_SERVICE_PUBLIC,
+                             auth_type = AUTH_BASIC,
+                             simplify_to_df=TRUE) {
 
     req <- get_request_by_ref_ids(ref_ids, service_type, rest_service, auth_type)
     content <- get_content(req, simplify_to_df)
@@ -289,7 +309,7 @@ get_refs_by_ref_search <- function(ref_ids, rest_service, auth_type, simplify_to
 
     i <- 1
     for (ref_ids in ref_id_groups) {
-        reference <- get_content_as_list(ref_ids, REFERENCE, rest_service, auth_type, simplify_to_df)
+        reference <- get_refs_content(ref_ids, REF_CODE_SEARCH, rest_service, auth_type, simplify_to_df)
 
         if (! is.null(reference$referenceId)) {
             reference_list[[i]] <- reference

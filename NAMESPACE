@@ -1,4 +1,6 @@
-export(get_content_as_list)
+export(get_refs_content_as_list)
+export(get_refs_content_as_df)
+export(get_refs_content)
 export(get_request_by_ref_ids)
 export(get_request)
 export(get_content)
