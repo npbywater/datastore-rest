@@ -162,6 +162,21 @@ is_program_profile <- function(program_profile) {
     return(ret)
 }
 
+get_prog_proj_prod_profiles_dt <- function(program_ref_id, rest_svc_url, auth_type) {
+
+    project_profiles <- get_program_project_profiles(program_ref_id, rest_svc_url, auth_type)
+    project_products_dt <- project_profiles_to_products_dt(project_profiles)
+
+    proj_prods_refs <- project_products_dt$referenceId
+
+    proj_products_rs_dt <- get_refs_by_ref_search(proj_prods_refs, rest_svc_url, auth_type)
+    proj_products_rs_dt <- proj_products_rs_dt[, c("referenceId", "mostRecentVersion", "referenceUrl")]
+
+    products_dt <- project_products_dt[proj_products_rs_dt, on=.(referenceId)]
+
+    return(products_dt)
+}
+
 ## Return a list of PROJECT-REFERENCE-PROFILEs called by REST service
 ## URL query: Profile?q=.
 ##
