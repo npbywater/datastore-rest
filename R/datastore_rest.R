@@ -31,7 +31,7 @@ REF_CODE_SEARCH <- "ref_code_search" # /rest/ReferenceCodeSearch
 REF_CODE_SEARCH_COMP <- "ref_code_search_comp" # /rest/ReferenceCodeSearch/Composite
 
 ## REST service URL
-REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
+REST_SVC_PUBLIC_URL <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 
 ## Authentication types
 AUTH_BASIC <- "basic"
@@ -44,7 +44,7 @@ REF_PROFILE_URL <- "https://irma.nps.gov/DataStore/Reference/Profile/"
 ## converted to content by the jsonlite::fromJSON function.
 get_refs_content_as_list <- function(ref_ids,
                                      rest_rsrc_type = REF_PROFILE,
-                                     rest_svc_url = REST_SERVICE_PUBLIC,
+                                     rest_svc_url = REST_SVC_PUBLIC_URL,
                                      auth_type = AUTH_BASIC) {
 
     content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, auth_type, simplify_to_df=FALSE)
@@ -54,7 +54,7 @@ get_refs_content_as_list <- function(ref_ids,
 
 get_refs_content_as_df <- function(ref_ids,
                                    rest_rsrc_type = REF_PROFILE,
-                                   rest_svc_url = REST_SERVICE_PUBLIC,
+                                   rest_svc_url = REST_SVC_PUBLIC_URL,
                                    auth_type = AUTH_BASIC) {
 
     content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, auth_type, simplify_to_df=TRUE)
@@ -64,7 +64,7 @@ get_refs_content_as_df <- function(ref_ids,
 
 get_refs_content <- function(ref_ids,
                              rest_rsrc_type = REF_PROFILE,
-                             rest_svc_url = REST_SERVICE_PUBLIC,
+                             rest_svc_url = REST_SVC_PUBLIC_URL,
                              auth_type = AUTH_BASIC,
                              simplify_to_df=TRUE) {
 
