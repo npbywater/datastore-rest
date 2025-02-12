@@ -11,7 +11,7 @@ get_req_response_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
   \item{ref_ids}{a vector string of DataStore Reference IDs. E.g.
     "2305721, 2182981".}
   \item{rest_rsrc_type}{a REST Api (service) type. Values accepted:
-    ("ref_profile", "ref_code_search", or "ref_composite").}
+    ("ref_profile", "ref_code_search", or "ref_code_search_comp").}
   \item{rest_svc_url}{a REST URL for the IRMA/DataStore REST services.}
   \item{auth_type}{one of the following types supported by
     Curl: \code{basic} or \code{ntlm}.}
