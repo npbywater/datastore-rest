@@ -170,13 +170,11 @@ get_prog_proj_prod_profiles_dt <- function(program_ref_id, rest_svc_url, auth_ty
     project_profiles <- get_program_project_profiles(program_ref_id, rest_svc_url, auth_type)
     project_products_dt <- project_profiles_to_products_dt(project_profiles)
 
-    proj_prods_refs <- project_products_dt$referenceId
-
     ## Add Reference URL columns.
     project_products_dt[, c("referenceUrl",
-                            "project_reference_url") :=
+                            "project_ref_url") :=
                               .(ref_ids_to_url(referenceId),
-                                ref_ids_to_url(project_reference_id))]
+                                ref_ids_to_url(project_ref_id))]
 
     ## Add program name column.
     project_products_dt[, "program_name"] <- program_name
@@ -184,8 +182,8 @@ get_prog_proj_prod_profiles_dt <- function(program_ref_id, rest_svc_url, auth_ty
     ## Re-order the columns. This creates a reference to project_products_dt.
     setcolorder(project_products_dt, c("program_name",
                                        "project_title",
-                                       "project_reference_id",
-                                       "project_reference_url",
+                                       "project_ref_id",
+                                       "project_ref_url",
                                        "referenceId",
                                        "referenceUrl",
                                        "newVersion",
@@ -300,7 +298,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
 
                 dt_list[[m]] <- data.table::as.data.table(product)
 
-                dt_list[[m]][, c("project_reference_id", "project_title") :=
+                dt_list[[m]][, c("project_ref_id", "project_title") :=
                                    .(project_list$referenceId,
                                      project_list$bibliography$title)]
 
