@@ -323,7 +323,7 @@ get_ref_profiles <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=FA
     i <- 1
 
     for (ref_ids in ref_id_groups) {
-        profiles <- get_ref_profiles_by_ids(ref_ids, rest_svc_url, auth_type, simplify_to_df)
+        profiles <- get_ref_profiles_by_ref_ids(ref_ids, rest_svc_url, auth_type, simplify_to_df)
         profile_list[[i]] <- profiles
         i = i + 1
     }
@@ -331,7 +331,7 @@ get_ref_profiles <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=FA
     return(profile_list)
 }
 
-get_ref_profiles_by_ids <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=TRUE) {
+get_ref_profiles_by_ref_ids <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=TRUE) {
 
     profile <- get_refs_content(ref_ids, REF_PROFILE, rest_svc_url, auth_type, simplify_to_df)
 
