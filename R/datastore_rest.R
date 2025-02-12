@@ -37,6 +37,9 @@ REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 AUTH_BASIC <- "basic"
 AUTH_NTLM <- "ntlm" ## For secure service type.
 
+## Profile DataStore URL
+REF_PROFILE_URL <- "https://irma.nps.gov/DataStore/Reference/Profile/"
+
 ## Returns a list of values that for a given REST request are
 ## converted to content by the jsonlite::fromJSON function.
 get_refs_content_as_list <- function(ref_ids,
@@ -162,19 +165,49 @@ is_program_profile <- function(program_profile) {
     return(ret)
 }
 
-get_prog_proj_prod_profiles_dt <- function(program_ref_id, rest_svc_url, auth_type) {
+get_prog_proj_prod_profiles_dt <- function(program_ref_id, rest_svc_url, auth_type, program_name="") {
 
     project_profiles <- get_program_project_profiles(program_ref_id, rest_svc_url, auth_type)
     project_products_dt <- project_profiles_to_products_dt(project_profiles)
 
     proj_prods_refs <- project_products_dt$referenceId
 
-    proj_products_rs_dt <- get_refs_by_ref_search(proj_prods_refs, rest_svc_url, auth_type)
-    proj_products_rs_dt <- proj_products_rs_dt[, c("referenceId", "mostRecentVersion", "referenceUrl")]
+    ## Add Reference URL columns.
+    project_products_dt[, c("referenceUrl",
+                            "project_reference_url") :=
+                              .(ref_ids_to_url(referenceId),
+                                ref_ids_to_url(project_reference_id))]
 
-    products_dt <- project_products_dt[proj_products_rs_dt, on=.(referenceId)]
+    ## Add program name column.
+    project_products_dt[, "program_name"] <- program_name
 
-    return(products_dt)
+    ## Re-order the columns. This creates a reference to project_products_dt.
+    setcolorder(project_products_dt, c("program_name",
+                                       "project_title",
+                                       "project_reference_id",
+                                       "project_reference_url",
+                                       "referenceId",
+                                       "referenceUrl",
+                                       "newVersion",
+                                       "referenceType",
+                                       "dateOfIssue",
+                                       "lifecycle",
+                                       "visibility",
+                                       "fileCount",
+                                       "fileAccess",
+                                       "title",
+                                       "citation",
+                                       "typeName",
+                                       "isDOI",
+                                       "units"))
+
+    ## Return a copy and not a reference.
+    return(copy(project_products_dt))
+}
+
+ref_ids_to_url <- function(ref_ids) {
+    ref_id_urls <- file.path(REF_PROFILE_URL, ref_ids)
+    return(ref_id_urls)
 }
 
 ## Return a list of PROJECT-REFERENCE-PROFILEs called by REST service
