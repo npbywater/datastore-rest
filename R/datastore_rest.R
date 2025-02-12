@@ -165,7 +165,7 @@ is_program_profile <- function(program_profile) {
     return(ret)
 }
 
-get_prog_proj_prod_profiles_dt <- function(program_ref_id, rest_svc_url, auth_type, program_name="") {
+get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url, auth_type, program_name="") {
 
     project_profiles <- get_program_project_profiles(program_ref_id, rest_svc_url, auth_type)
     project_products_dt <- project_profiles_to_products_dt(project_profiles)
