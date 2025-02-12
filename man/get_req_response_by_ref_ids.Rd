@@ -1,11 +1,11 @@
-\name{get_request_by_ref_ids}
-\alias{get_request_by_ref_ids}
-\title{Get request by REST URL from IRMA/DataStore}
+\name{get_req_response_by_ref_ids}
+\alias{get_req_response_by_ref_ids}
+\title{Get request response by REST URL from IRMA/DataStore}
 \description{
-Returns the GET request for a particular REST URL and authentication.
+Returns the GET request response for a particular REST URL and authentication.
 }
 \usage{
-get_request_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
+get_req_response_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
 }
 \arguments{
   \item{ref_ids}{a vector string of DataStore Reference IDs. E.g.
@@ -45,7 +45,7 @@ AUTH_BASIC <- "basic"
 
 ref_ids <- paste0(c(2305721, 2182981), collapse=",")
 
-get_request_by_ref_ids(ref_ids, REF_CODE_SEARCH, REST_SERVICE_PUBLIC, AUTH_BASIC)
+get_req_response_by_ref_ids(ref_ids, REF_CODE_SEARCH, REST_SERVICE_PUBLIC, AUTH_BASIC)
 }
 }
 \author{Nick Bywater}
