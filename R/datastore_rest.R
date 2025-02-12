@@ -68,8 +68,8 @@ get_refs_content <- function(ref_ids,
                              auth_type = AUTH_BASIC,
                              simplify_to_df=TRUE) {
 
-    req <- get_request_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
-    content <- get_content(req, simplify_to_df)
+    req_response <- get_req_response_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
+    content <- get_content(req_response, simplify_to_df)
 
     return(content)
 }
@@ -84,7 +84,7 @@ get_refs_content <- function(ref_ids,
 ##   auth_type: authentication-type as defined by global constants.
 ##     - AUTH_BASIC is for public REST service.
 ##     - AUTH_NTLM is for secure REST servics.
-get_request_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url, auth_type) {
+get_req_response_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url, auth_type) {
 
     if (rest_rsrc_type == REF_CODE_SEARCH) {
         ref_url <- paste0(rest_svc_url, "ReferenceCodeSearch?q=", ref_ids)
@@ -94,12 +94,12 @@ get_request_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url, auth_t
         ref_url <- paste0(rest_svc_url, "Profile?q=", ref_ids)
     }
 
-    req <- get_request(ref_url, auth_type)
+    req_response <- get_req_response(ref_url, auth_type)
 
-    return(req)
+    return(req_response)
 }
 
-get_request <- function(ref_url, auth_type) {
+get_req_response <- function(ref_url, auth_type) {
 
     if (! xor((AUTH_NTLM == auth_type), (AUTH_BASIC == auth_type))) {
         stop("The authentication type must be 'basic' or 'ntml'.")
@@ -115,23 +115,23 @@ get_request <- function(ref_url, auth_type) {
         }
     }
 
-    req <- httr::GET(ref_url, httr::authenticate(":", ":", auth_type))
-    status_code <- httr::stop_for_status(req)$status_code
+    req_response <- httr::GET(ref_url, httr::authenticate(":", ":", auth_type))
+    status_code <- httr::stop_for_status(req_response)$status_code
 
     if (! status_code == 200) {
         stop("DataStore connection failed.")
     }
 
-    return(req)
+    return(req_response)
 }
 
 ## Returns a data.frame from JSON via request.
 ## Parameter(s):
 ##   simplify_to_df: this value is passed to the 'simplifyDataFrame'
 ##     parameter of the function 'fromJSON'.
-get_content <- function(req, simplify_to_df = TRUE) {
+get_content <- function(req_response, simplify_to_df = TRUE) {
 
-    json <- httr::content(req, "text")
+    json <- httr::content(req_response, "text")
     json_lite <- jsonlite::fromJSON(json, simplifyDataFrame=simplify_to_df)
 
     return(json_lite)
