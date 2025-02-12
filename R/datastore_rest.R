@@ -101,15 +101,15 @@ get_req_response_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url, a
 
 get_req_response <- function(ref_url, auth_type) {
 
-    if (! xor((AUTH_NTLM == auth_type), (AUTH_BASIC == auth_type))) {
+    if (! xor((auth_type == AUTH_NTLM), (auth_type == AUTH_BASIC))) {
         stop("The authentication type must be 'basic' or 'ntml'.")
     }
 
-    if (AUTH_NTLM == auth_type) {
+    if (auth_type == AUTH_NTLM) {
         if (length(grep("/datastore-secure/", ref_url)) == 0) {
             stop("The URL format for 'ntlm' authentication is incorrect.")
         }
-    } else if (AUTH_BASIC == auth_type) {
+    } else if (auth_type == AUTH_BASIC) {
         if (length(grep("/datastore/", ref_url)) == 0) {
             stop("The URL format for 'basic' authentication is incorrect.")
         }
