@@ -36,9 +36,8 @@ NOTE: The product-list elements 'units' and 'linkedResources' are
 \dontrun{
 CAKN_PROGRAM_REF_ID <- 2210836
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
-AUTH_BASIC <- "basic"
 
-project_profiles <- get_program_project_profiles(CAKN_PROGRAM_REF_ID, REST_SERVICE_PUBLIC, AUTH_BASIC)
+project_profiles <- get_program_project_profiles(CAKN_PROGRAM_REF_ID, REST_SERVICE_PUBLIC)
 
 project_products <- project_profiles_to_products_dt(project_profiles)
 

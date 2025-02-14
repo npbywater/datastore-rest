@@ -6,14 +6,12 @@
   REST service URL query: \code{Profile?q=}.
 }
 \usage{
-get_program_project_profiles(program_ref_id, rest_svc_url, auth_type)
+get_program_project_profiles(program_ref_id, rest_svc_url)
 }
 \arguments{
   \item{program_ref_id}{a PROGRAM-REFERENCE-ID in DataStore. For
     example, the CAKN program Reference ID 2210836.}
   \item{rest_svc_url}{a REST URL for the IRMA/DataStore REST services.}
-  \item{auth_type}{one of the following types supported by
-    Curl: \code{basic} or \code{ntlm}.}
 }
 
 \value{
@@ -49,9 +47,8 @@ REST service URLs. See \code{https://irmaservices.nps.gov/}.
 \dontrun{
 CAKN_PROGRAM_REF_ID <- 2210836
 REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
-AUTH_BASIC <- "basic"
 
-program_project_profiles <- get_program_project_profiles(CAKN_PROGRAM_REF_ID, REST_SERVICE_PUBLIC, AUTH_BASIC)
+program_project_profiles <- get_program_project_profiles(CAKN_PROGRAM_REF_ID, REST_SERVICE_PUBLIC)
 
 # Get first project.
 first_project <- head(program_project_profiles[[1]],1)

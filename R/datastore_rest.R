@@ -33,10 +33,6 @@ REF_CODE_SEARCH_COMP <- "ref_code_search_comp" # /rest/ReferenceCodeSearch/Compo
 ## REST service URL
 REST_SVC_PUBLIC_URL <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 
-## Authentication types
-AUTH_BASIC <- "basic"
-AUTH_NTLM <- "ntlm" ## For secure service type.
-
 ## Profile DataStore URL
 REF_PROFILE_URL <- "https://irma.nps.gov/DataStore/Reference/Profile/"
 
@@ -44,20 +40,18 @@ REF_PROFILE_URL <- "https://irma.nps.gov/DataStore/Reference/Profile/"
 ## converted to content by the jsonlite::fromJSON function.
 get_refs_content_as_list <- function(ref_ids,
                                      rest_rsrc_type = REF_PROFILE,
-                                     rest_svc_url = REST_SVC_PUBLIC_URL,
-                                     auth_type = AUTH_BASIC) {
+                                     rest_svc_url = REST_SVC_PUBLIC_URL) {
 
-    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, auth_type, simplify_to_df=FALSE)
+    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, simplify_to_df=FALSE)
 
     return(content)
 }
 
 get_refs_content_as_df <- function(ref_ids,
                                    rest_rsrc_type = REF_PROFILE,
-                                   rest_svc_url = REST_SVC_PUBLIC_URL,
-                                   auth_type = AUTH_BASIC) {
+                                   rest_svc_url = REST_SVC_PUBLIC_URL) {
 
-    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, auth_type, simplify_to_df=TRUE)
+    content <- get_refs_content(ref_ids, rest_rsrc_type, rest_svc_url, simplify_to_df=TRUE)
 
     return(content)
 }
@@ -65,10 +59,9 @@ get_refs_content_as_df <- function(ref_ids,
 get_refs_content <- function(ref_ids,
                              rest_rsrc_type = REF_PROFILE,
                              rest_svc_url = REST_SVC_PUBLIC_URL,
-                             auth_type = AUTH_BASIC,
                              simplify_to_df=TRUE) {
 
-    req_response <- get_req_response_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url, auth_type)
+    req_response <- get_req_response_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url)
     content <- get_content(req_response, simplify_to_df)
 
     return(content)
@@ -81,10 +74,7 @@ get_refs_content <- function(ref_ids,
 ##     as defined by global constants.
 ##   rest_svc_url: a REST URL for the DataStore REST services as
 ##     defined by global constants.
-##   auth_type: authentication-type as defined by global constants.
-##     - AUTH_BASIC is for public REST service.
-##     - AUTH_NTLM is for secure REST servics.
-get_req_response_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url, auth_type) {
+get_req_response_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url) {
 
     if (rest_rsrc_type == REF_CODE_SEARCH) {
         ref_url <- paste0(rest_svc_url, "ReferenceCodeSearch?q=", ref_ids)
@@ -94,26 +84,14 @@ get_req_response_by_ref_ids <- function(ref_ids, rest_rsrc_type, rest_svc_url, a
         ref_url <- paste0(rest_svc_url, "Profile?q=", ref_ids)
     }
 
-    req_response <- get_req_response(ref_url, auth_type)
+    req_response <- get_req_response(ref_url)
 
     return(req_response)
 }
 
-get_req_response <- function(ref_url, auth_type) {
+get_req_response <- function(ref_url) {
 
-    if (! xor((auth_type == AUTH_NTLM), (auth_type == AUTH_BASIC))) {
-        stop("The authentication type must be 'basic' or 'ntml'.")
-    }
-
-    if (auth_type == AUTH_NTLM) {
-        if (length(grep("/datastore-secure/", ref_url)) == 0) {
-            stop("The URL format for 'ntlm' authentication is incorrect.")
-        }
-    } else if (auth_type == AUTH_BASIC) {
-        if (length(grep("/datastore/", ref_url)) == 0) {
-            stop("The URL format for 'basic' authentication is incorrect.")
-        }
-    }
+    auth_type <- rest_url_auth_type(ref_url)
 
     req_response <- httr::GET(ref_url, httr::authenticate(":", ":", auth_type))
     status_code <- httr::stop_for_status(req_response)$status_code
@@ -123,6 +101,19 @@ get_req_response <- function(ref_url, auth_type) {
     }
 
     return(req_response)
+}
+
+rest_url_auth_type <- function(ref_url) {
+
+    if (length(grep("https://irmaservices.nps.gov/datastore-secure/", ref_url)) == 1) {
+        auth_type <- "ntlm"
+    } else if (length(grep("https://irmaservices.nps.gov/datastore/", ref_url)) == 1) {
+        auth_type <- "basic"
+    } else {
+        stop("Can't determine authentication type for REST URL.")
+    }
+
+    return(auth_type)
 }
 
 ## Returns a data.frame from JSON via request.
@@ -137,9 +128,9 @@ get_content <- function(req_response, simplify_to_df = TRUE) {
     return(json_lite)
 }
 
-get_program_profile <- function(program_ref_id, rest_svc_url, auth_type, simplify_to_df=TRUE) {
+get_program_profile <- function(program_ref_id, rest_svc_url, simplify_to_df=TRUE) {
 
-    program_profile <- get_refs_content(program_ref_id, REF_PROFILE, rest_svc_url, auth_type)
+    program_profile <- get_refs_content(program_ref_id, REF_PROFILE, rest_svc_url)
 
     if (! is_program_profile(program_profile)) {
         stop("The value of program_ref_id is not a program Reference ID!")
@@ -165,9 +156,9 @@ is_program_profile <- function(program_profile) {
     return(ret)
 }
 
-get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url, auth_type, program_name="") {
+get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url, program_name="") {
 
-    project_profiles <- get_program_project_profiles(program_ref_id, rest_svc_url, auth_type)
+    project_profiles <- get_program_project_profiles(program_ref_id, rest_svc_url)
     project_products_dt <- project_profiles_to_products_dt(project_profiles)
 
     ## Add Reference URL columns.
@@ -226,14 +217,14 @@ ref_ids_to_url <- function(ref_ids) {
 ##       'fromJSON') to data.frames causes us problems for project
 ##       profiles when chunking up to 25 profiles at a time; so we
 ##       return just a list without data.frame coercion.
-get_program_project_profiles <- function(program_ref_id, rest_svc_url, auth_type) {
+get_program_project_profiles <- function(program_ref_id, rest_svc_url) {
 
-    program <- get_program_profile(program_ref_id, rest_svc_url, auth_type)
+    program <- get_program_profile(program_ref_id, rest_svc_url)
 
     projects_df <- program$children[[1]]
     project_ref_ids <- projects_df$referenceId
 
-    project_profiles <- get_ref_profiles(project_ref_ids, rest_svc_url, auth_type, simplify_to_df=FALSE)
+    project_profiles <- get_ref_profiles(project_ref_ids, rest_svc_url, simplify_to_df=FALSE)
 
     class(project_profiles) <- "project"
 
@@ -312,7 +303,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
 
 ## Return a list of REFERENCE-PROFILES (as specified by DataStore
 ## API), when provided a vector of Reference IDs.
-get_ref_profiles <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=FALSE) {
+get_ref_profiles <- function(ref_ids, rest_svc_url, simplify_to_df=FALSE) {
 
     profile_list <- list()
 
@@ -323,7 +314,7 @@ get_ref_profiles <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=FA
     i <- 1
 
     for (ref_ids in ref_id_groups) {
-        profiles <- get_ref_profiles_by_ref_ids(ref_ids, rest_svc_url, auth_type, simplify_to_df)
+        profiles <- get_ref_profiles_by_ref_ids(ref_ids, rest_svc_url, simplify_to_df)
         profile_list[[i]] <- profiles
         i = i + 1
     }
@@ -331,9 +322,9 @@ get_ref_profiles <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=FA
     return(profile_list)
 }
 
-get_ref_profiles_by_ref_ids <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=TRUE) {
+get_ref_profiles_by_ref_ids <- function(ref_ids, rest_svc_url, simplify_to_df=TRUE) {
 
-    profile <- get_refs_content(ref_ids, REF_PROFILE, rest_svc_url, auth_type, simplify_to_df)
+    profile <- get_refs_content(ref_ids, REF_PROFILE, rest_svc_url, simplify_to_df)
 
     return(profile)
 }
@@ -373,7 +364,7 @@ group_ref_ids <- function(ref_ids) {
 ##
 ## Parameter(s):
 ##   ref_ids: a vector of REFERENCE-IDs in DataStore.
-get_refs_by_ref_search <- function(ref_ids, rest_svc_url, auth_type, simplify_to_df=TRUE) {
+get_refs_by_ref_search <- function(ref_ids, rest_svc_url, simplify_to_df=TRUE) {
 
     reference_list <- list()
 
@@ -383,7 +374,7 @@ get_refs_by_ref_search <- function(ref_ids, rest_svc_url, auth_type, simplify_to
 
     i <- 1
     for (ref_ids in ref_id_groups) {
-        reference <- get_refs_content(ref_ids, REF_CODE_SEARCH, rest_svc_url, auth_type, simplify_to_df)
+        reference <- get_refs_content(ref_ids, REF_CODE_SEARCH, rest_svc_url, simplify_to_df)
 
         if (! is.null(reference$referenceId)) {
             reference_list[[i]] <- reference

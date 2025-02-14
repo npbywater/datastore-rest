@@ -5,8 +5,7 @@ REST_SERVICE_PUBLIC <- "https://irmaservices.nps.gov/datastore/v7/rest/"
 
 program_profile <- get_refs_content_as_df(CAKN_PROGRAM_REF_ID,
                                           "ref_profile",
-                                          REST_SERVICE_PUBLIC,
-                                          "basic")
+                                          REST_SERVICE_PUBLIC)
 
 expect_true(is.data.frame(program_profile))
 
@@ -17,8 +16,7 @@ expect_true(result)
 
 program_profile <- get_refs_content_as_list(CAKN_PROGRAM_REF_ID,
                                             "ref_profile",
-                                            REST_SERVICE_PUBLIC,
-                                            "basic")
+                                            REST_SERVICE_PUBLIC)
 
 expect_false(is.data.frame(program_profile))
     
