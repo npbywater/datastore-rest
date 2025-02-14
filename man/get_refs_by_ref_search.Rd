@@ -7,7 +7,7 @@ Returns Reference Profiles by REST URL query
 \code{ReferenceCodeSearch?=} from IRMA/DataStore.
 }
 \usage{
-get_refs_by_ref_search(ref_ids, rest_svc_url, simplify_to_df=TRUE)
+get_refs_by_ref_search(ref_ids, rest_svc_url=getOption("dr.rest_url"), simplify_to_df=TRUE)
 }
 \arguments{
   \item{ref_ids}{a vector of DataStore REFERENCE-IDs.}

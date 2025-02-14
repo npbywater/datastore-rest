@@ -5,7 +5,7 @@
 Returns the GET request response for a particular REST URL.
 }
 \usage{
-get_req_response_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url)
+get_req_response_by_ref_ids(ref_ids, rest_rsrc_type, rest_svc_url=getOption("dr.rest_url"))
 }
 \arguments{
   \item{ref_ids}{a vector string of DataStore Reference IDs. E.g.

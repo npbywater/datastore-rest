@@ -6,7 +6,7 @@
   REST service URL query: \code{Profile?q=}.
 }
 \usage{
-get_program_project_profiles(program_ref_id, rest_svc_url)
+get_program_project_profiles(program_ref_id, rest_svc_url=getOption("dr.rest_url"))
 }
 \arguments{
   \item{program_ref_id}{a PROGRAM-REFERENCE-ID in DataStore. For
