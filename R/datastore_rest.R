@@ -178,28 +178,28 @@ get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url=getOption("dr
     project_products_dt[, "program_name"] <- program_name
 
     ## Re-order the columns. This creates a reference to project_products_dt.
-    setcolorder(project_products_dt, c("program_name",
-                                       "program_ref_id",
-                                       "project_title",
-                                       "project_ref_id",
-                                       "project_ref_url",
-                                       "referenceId",
-                                       "referenceUrl",
-                                       "newVersion",
-                                       "referenceType",
-                                       "dateOfIssue",
-                                       "lifecycle",
-                                       "visibility",
-                                       "fileCount",
-                                       "fileAccess",
-                                       "title",
-                                       "citation",
-                                       "typeName",
-                                       "isDOI",
-                                       "units"))
+    data.table::setcolorder(project_products_dt, c("program_name",
+                                                   "program_ref_id",
+                                                   "project_title",
+                                                   "project_ref_id",
+                                                   "project_ref_url",
+                                                   "referenceId",
+                                                   "referenceUrl",
+                                                   "newVersion",
+                                                   "referenceType",
+                                                   "dateOfIssue",
+                                                   "lifecycle",
+                                                   "visibility",
+                                                   "fileCount",
+                                                   "fileAccess",
+                                                   "title",
+                                                   "citation",
+                                                   "typeName",
+                                                   "isDOI",
+                                                   "units"))
 
     ## Return a copy and not a reference.
-    return(copy(project_products_dt))
+    return(data.table::copy(project_products_dt))
 }
 
 ref_ids_to_url <- function(ref_ids) {
