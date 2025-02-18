@@ -171,11 +171,15 @@ get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url=getOption("dr
                               .(ref_ids_to_url(referenceId),
                                 ref_ids_to_url(project_ref_id))]
 
-    ## Add program name column.
+    ## Add program Reference ID.
+    project_products_dt[, "program_ref_id"] <- program_ref_id
+
+    ## Add optional program name column.
     project_products_dt[, "program_name"] <- program_name
 
     ## Re-order the columns. This creates a reference to project_products_dt.
     setcolorder(project_products_dt, c("program_name",
+                                       "program_ref_id",
                                        "project_title",
                                        "project_ref_id",
                                        "project_ref_url",
