@@ -44,6 +44,5 @@ A data.table with the following columns:
 \author{
 Nick Bywater
 }
-}
 \examples{
 }
