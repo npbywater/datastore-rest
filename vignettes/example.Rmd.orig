@@ -14,6 +14,40 @@ knitr::opts_chunk$set(
 )
 ```
 
+A simple script to gather all DataStore products for the
+program-project-profiles for a particular DataStore Program Reference
+and return as a `data.table`.
+
+```{r eval=FALSE}
+## Created by: Nick Bywater
+## Government agency: National Park Service, CAKN
+## License: The Unlicense (Public Domain). See: https://unlicense.org/.
+
+CAKN_PROGRAM_REF_ID <- 2210836
+ARCN_PROGRAM_REF_ID <- 2208369
+
+REST_SVC_PUBLIC_URL <- "https://irmaservices.nps.gov/datastore/v7/rest/"
+
+## Global option 'dr.rest_url', set by default, to public REST URL.
+## But explicitly set for this example.
+set_option_rest_url(REST_SVC_PUBLIC_URL)
+
+cakn_dt <- get_prog_proj_products_dt(CAKN_PROGRAM_REF_ID,
+                                     program_name="CAKN")
+
+arcn_dt <- get_prog_proj_products_dt(ARCN_PROGRAM_REF_ID,
+                                     program_name="ARCN")
+
+## Remove linkedResources; should probably written to another table.
+arcn_dt <- arcn_dt[, -c("linkedResources")]
+cakn_dt <- cakn_dt[, -c("linkedResources")]
+
+## Apply data.table union to arcn_dt and cakn_dt.
+arcn_cakn_union_dt <- funion(arcn_dt, cakn_dt, all=TRUE)
+```
+An example that uses lower level functions to gather elemental data
+from profile and reference code search REST resources.
+
 ```{r eval=FALSE}
 ## example_script.R
 ## Version 1.1, 2025-February
