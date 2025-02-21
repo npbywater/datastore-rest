@@ -30,9 +30,6 @@ REF_PROFILE <- "ref_profile" # /rest/Profile
 REF_CODE_SEARCH <- "ref_code_search" # /rest/ReferenceCodeSearch
 REF_CODE_SEARCH_COMP <- "ref_code_search_comp" # /rest/ReferenceCodeSearch/Composite
 
-## REST service URL
-REST_SVC_PUBLIC_URL <- "https://irmaservices.nps.gov/datastore/v7/rest/"
-
 ## Profile DataStore URL
 REF_PROFILE_URL <- "https://irma.nps.gov/DataStore/Reference/Profile/"
 
