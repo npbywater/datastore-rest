@@ -177,29 +177,37 @@ get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url=getOption("dr
     ## Add optional program name column.
     project_products_dt[, "program_name"] <- program_name
 
-    ## Re-order the columns. This creates a reference to project_products_dt.
-    data.table::setcolorder(project_products_dt, c("program_name",
-                                                   "program_ref_id",
-                                                   "project_title",
-                                                   "project_ref_id",
-                                                   "project_ref_url",
-                                                   "referenceId",
-                                                   "referenceUrl",
-                                                   "newVersion",
-                                                   "referenceType",
-                                                   "dateOfIssue",
-                                                   "lifecycle",
-                                                   "visibility",
-                                                   "fileCount",
-                                                   "fileAccess",
-                                                   "title",
-                                                   "citation",
-                                                   "typeName",
-                                                   "isDOI",
-                                                   "units"))
+    ## Re-order the columns.
+    ret_dt <- project_products_dt[, c("program_name",
+                                      "program_ref_id",
+                                      "project_title",
+                                      "project_ref_id",
+                                      "project_ref_url",
 
-    ## Return a copy and not a reference.
-    return(data.table::copy(project_products_dt))
+                                      ## Product elements from DataStore:
+                                      "referenceId",
+                                      "referenceUrl", ## Calculated value (No value from DataStore)
+                                      "referenceType",
+                                      "referenceGroupType", ## No value
+                                      "dateOfIssue",
+                                      "lifecycle",
+                                      "visibility",
+                                      "fileCount",
+                                      "fileAccess",
+                                      "title",
+                                      "citation",
+                                      "allContactsDisplayCitation", ## No value
+                                      "contacts", ## No value
+                                      "typeName",
+                                      "isDOI",
+                                      "units",
+                                      "contentProducingUnits", ## No value
+                                      "linkedResources",
+                                      "newVersion",
+                                      "mostRecentVersion" ## No vlaue
+                                      )]
+
+    return(ret_dt)
 }
 
 ref_ids_to_url <- function(ref_ids) {
