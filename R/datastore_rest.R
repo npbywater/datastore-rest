@@ -292,6 +292,11 @@ project_profiles_to_products_dt <- function(project_profiles) {
             for (k in seq(length(project_list$products))) {
                 product <- project_list$products[[k]]
 
+                ## Replace NULLs with NAs. Otherwise as.data.table
+                ## will drop the list elements that have the value
+                ## NULL.
+                product <- lapply(product, function(x) if (is.null(x)) NA else x)
+
                 product$linkedResources <- lr_list_to_vector_str(product)
                 product$units <- units_vector_to_vector_str(product)
 
@@ -306,6 +311,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
         }
     }
 
+    ## Use fill=TRUE, because project can exist without products.
     return(data.table::rbindlist(dt_list, fill=TRUE))
 }
 
