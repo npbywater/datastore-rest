@@ -264,24 +264,29 @@ project_profiles_to_products_dt <- function(project_profiles) {
         stop("The argument 'project_profiles' is not a list of project references.")
     }
 
-    ## linkedResources list to vector string.
-    lr_list_to_vector_str <- function(product) {
-        if (length(product$linkedResources) == 1) {
-            lr <- paste0(names(product$linkedResources[[1]])," = ",
-                         product$linkedResources[[1]], collapse=" ")
+    ## linkedResources list to character string.
+    lr_list_to_str <- function(product) {
 
-        } else if (length(product$linkedResources) > 1) {
-            lr <- paste0(product$linkedResources, collapse=" ")
+        lr <- product$linkedResources
 
+        if (length(lr) > 0) {
+            lr_names <- names(lr[[1]])
+            lr_str <- ""
+
+            for (i in lr) {
+                i_na <- lapply(i, function(x) if (is.null(x)) NA else x)
+                i_str <- paste0(lr_names," = ", unlist(i_na), collapse=", ")
+                lr_str <- if(lr_str == "") i_str else paste0(c(lr_str, i_str), collapse=", ")
+            }
         } else {
-            lr <- product$linkedResources
+            lr_str <- NA
         }
 
-        return(lr)
+        return(lr_str)
     }
 
     ## units to vector string.
-    units_vector_to_vector_str <- function(product) {
+    units_vector_to_str <- function(product) {
         return(paste0(product$units, collapse=","))
     }
 
@@ -302,8 +307,8 @@ project_profiles_to_products_dt <- function(project_profiles) {
                 ## NULL.
                 product <- lapply(product, function(x) if (is.null(x)) NA else x)
 
-                product$linkedResources <- lr_list_to_vector_str(product)
-                product$units <- units_vector_to_vector_str(product)
+                product$linkedResources <- lr_list_to_str(product)
+                product$units <- units_vector_to_str(product)
 
                 dt_list[[m]] <- data.table::as.data.table(product)
 
