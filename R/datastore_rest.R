@@ -276,7 +276,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
             for (i in lr) {
                 i_na <- lapply(i, function(x) if (is.null(x)) NA else x)
                 i_str <- paste0(lr_names," = ", unlist(i_na), collapse=", ")
-                lr_str <- if(lr_str == "") i_str else paste0(c(lr_str, i_str), collapse=", ")
+                lr_str <- if(lr_str == "") i_str else paste0(c(lr_str, i_str), collapse="\n")
             }
         } else {
             lr_str <- NA
