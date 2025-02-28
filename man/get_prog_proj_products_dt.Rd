@@ -57,10 +57,10 @@ The product of a project Reference:
   produced product content.}
 \item{contentProducingUnits}{\bold{NOTE:} Value NOT returned by
   REST resource \code{ref_profile} type.}
-\item{linkedResources}{a comma separated list (as string) where element
-  name and its value are separated by an equals (\code{=}) sign. If the
-  list is of length one, then the items are separated by one space
-  (TODO: revisit this).}
+\item{linkedResources}{a comma separated string of linked resource
+  elements, where each element name and its value are separated by an
+  equals (\code{=}) sign. If linked resource list is of length two or
+  more, the linked resource strings are separated by a newline.}
 \item{newVersion}{the Reference ID of the newer product Reference version.}
 \item{mostRecentVersion}{the most recent version of Reference ID of the
   newer product Reference version. \bold{NOTE:} Value NOT returned by
