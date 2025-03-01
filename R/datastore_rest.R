@@ -31,7 +31,7 @@ REF_CODE_SEARCH <- "ref_code_search" # /rest/ReferenceCodeSearch
 REF_CODE_SEARCH_COMP <- "ref_code_search_comp" # /rest/ReferenceCodeSearch/Composite
 
 ## Profile DataStore URL
-REF_PROFILE_URL <- "https://irma.nps.gov/DataStore/Reference/Profile/"
+REF_PROFILE_URL <- "https://irma.nps.gov/DataStore/Reference/Profile"
 
 set_option_rest_url <- function(rest_url) {
     options(dr.rest_url=rest_url)
