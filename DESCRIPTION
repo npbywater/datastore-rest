@@ -8,8 +8,9 @@ Imports: jsonlite, httr, data.table
 VignetteBuilder: knitr
 Author: Nick Bywater
 Maintainer: Nick Bywater <nicklas_bywater@nps.gov>
-License: The Unlicense
+License: The Unlicense + file LICENSE
 Suggests:
     knitr,
     rmarkdown,
     tinytest
+URL: https://github.com/npbywater/datastore-rest
