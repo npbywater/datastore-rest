@@ -293,13 +293,13 @@ project_profiles_to_products_dt <- function(project_profiles) {
     dt_list <- list()
     m <- 1
 
-    for (i in seq(length(project_profiles))) {
+    for (i in seq_along(project_profiles)) {
         project_group <- project_profiles[[i]]
 
-        for (j in seq(length(project_group))) {
+        for (j in seq_along(project_group)) {
             project_list <- project_group[[j]]
 
-            for (k in seq(length(project_list$products))) {
+            for (k in seq_along(project_list$products)) {
                 product <- project_list$products[[k]]
 
                 ## Replace NULLs with NAs. Otherwise as.data.table
@@ -321,8 +321,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
         }
     }
 
-    ## Use fill=TRUE, because project can exist without products.
-    return(data.table::rbindlist(dt_list, fill=TRUE))
+    return(data.table::rbindlist(dt_list))
 }
 
 ## Return a list of REFERENCE-PROFILES (as specified by DataStore
@@ -366,7 +365,7 @@ group_ref_ids <- function(ref_ids) {
     ref_group_count <- ceiling(ref_id_count / to)
     ref_id_list <- list()
 
-    for (i in seq(ref_group_count)) {
+    for (i in seq_len(ref_group_count)) {
         if (any(is.na(ref_ids[from:to]))) {
             refs <- ref_ids[from:to]
             refs <- refs[! is.na(ref_ids[from:to])]
