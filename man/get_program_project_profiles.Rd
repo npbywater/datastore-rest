@@ -27,6 +27,12 @@ up to 25 grouped PROJECT-REFERENCE-PROFILES as returned by REST query
 NOTE: The returned list object is assigned the class name \code{project}
       so that its type can be tested when passed to another function.
 
+NOTE: The returned list object is assigned the following attributes:
+
+      - \code{program_ref_id}: the program Reference ID.
+
+      - \code{program_name}: the program Reference citation.
+
 NOTE: The automatic coercion of JSON arrays (via function
       \code{jsonlite::fromJSON}) to \code{data.frame}s causes node
       navigation issues for PROJECT-REFERENCE-PROFILEs when chunking up to 25

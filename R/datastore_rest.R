@@ -160,6 +160,8 @@ is_program_profile <- function(program_profile) {
 get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url=getOption("dr.rest_url"), program_name="") {
 
     project_profiles <- get_program_project_profiles(program_ref_id, rest_svc_url)
+    attr_program_name <- attributes(project_profiles)$program_name
+
     project_products_dt <- project_profiles_to_products_dt(project_profiles)
 
     ## Add Reference URL columns.
@@ -169,10 +171,15 @@ get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url=getOption("dr
                                 ref_ids_to_url(project_ref_id))]
 
     ## Add program Reference ID.
-    project_products_dt[, "program_ref_id"] <- program_ref_id
+    project_products_dt[, "program_ref_id" := program_ref_id]
 
-    ## Add optional program name column.
-    project_products_dt[, "program_name"] <- program_name
+    ## If program_name == "", then use program Reference citation
+    ## name. Otherwise, use optional program_name argument.
+    if (program_name == "") {
+        project_products_dt[, "program_name" := attr_program_name]
+    } else {
+        project_products_dt[, "program_name" := program_name]
+    }
 
     ## Re-order the columns.
     ret_dt <- project_products_dt[, c("program_name",
@@ -238,6 +245,9 @@ get_program_project_profiles <- function(program_ref_id, rest_svc_url=getOption(
     project_ref_ids <- projects_df$referenceId
 
     project_profiles <- get_ref_profiles(project_ref_ids, rest_svc_url, simplify_to_df=FALSE)
+
+    attributes(project_profiles)$program_ref_id <- program_ref_id
+    attributes(project_profiles)$program_name <- program$citation
 
     class(project_profiles) <- "project"
 

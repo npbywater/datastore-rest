@@ -12,7 +12,8 @@ get_prog_proj_products_dt(program_ref_id, rest_svc_url = getOption("dr.rest_url"
     example, the CAKN program Reference ID 2210836.}
   \item{rest_svc_url}{a REST URL for the IRMA/DataStore REST services.}
   \item{program_name}{user-supplied program name for
-    \code{program_ref_id}, such as "CAKN".}
+    \code{program_ref_id}, such as "CAKN". If no argument is supplied,
+    then the program Reference citation name is used by default.}
 }
 \details{
 
@@ -21,7 +22,9 @@ get_prog_proj_products_dt(program_ref_id, rest_svc_url = getOption("dr.rest_url"
 A data.table with the following columns.
 
 The progam Reference:
-\item{program_name}{a user-supplied program name.}
+\item{program_name}{a user-supplied program name. If no argument is
+    supplied, then the program Reference citation name is used by
+    default.}
 \item{program_ref_id}{the program Reference ID.}
 
 The project of a program Reference:
