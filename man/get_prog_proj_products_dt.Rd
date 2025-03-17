@@ -34,7 +34,7 @@ The product of a project Reference:
 \item{referenceUrl}{the product Reference URL. \bold{NOTE:} This value
    is not returned by DataStore. Rather is calculated in this function
    using the DataStore URL and the \code{referenceId}.}
-\item{referenceType}{the type of product Reference.}
+\item{referenceType}{the type of product Reference. E.g. "geospatial dataset".}
 \item{referenceGroupType}{the group that the Reference type belongs to.
   \bold{NOTE:} Value NOT returned by REST resource \code{ref_profile}
   type.}
@@ -51,7 +51,6 @@ The product of a project Reference:
   REST resource \code{ref_profile} type.}
 \item{contacts}{\bold{NOTE:} Value NOT returned by
   REST resource \code{ref_profile} type.}
-\item{typeName}{type of product. E.g. "geospatial dataset".}
 \item{isDOI}{does product have a DOI number?}
 \item{units}{a comma separated list (as string) of NPS units used to
   produced product content.}

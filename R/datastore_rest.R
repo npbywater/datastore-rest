@@ -195,7 +195,7 @@ get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url=getOption("dr
                                       "citation",
                                       "allContactsDisplayCitation", ## No value
                                       "contacts", ## No value
-                                      "typeName",
+                                      ## "typeName", values same as referenceType
                                       "isDOI",
                                       "units",
                                       "contentProducingUnits", ## No value
