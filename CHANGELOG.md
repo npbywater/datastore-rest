@@ -37,7 +37,35 @@ scheme as implemented by the
 - Add function `set_option_rest_url` to set the option "dr.rest_url".
 - Create file `zzz.R` to define `.onLoad` function.
 - Add package documentation in file `datastore-rest-package.Rd`.
+- Add function `get_prog_proj_products_dt`.
+  - Returns a data.table with ordered fields.
 - Add function documentation file `get_prog_proj_products_dt.Rd`.
+- Add a small example that uses function `get_prog_proj_products_dt`
+  to the vignettes documentation.
+
+### Fixed
+
+- In function `project_profiles_to_products_dt`:
+  - Revise function `lr_list_to_vector_str` to properly format linked
+    resources string. *NOTE:* renamed this function to `lr_list_to_str`.
+    - *FIX:* This function returns a comma separated string of
+      linked resource elements, where each element name and its value
+      are separated by an equals (`=`) sign. If linked resource list
+      is of length two or more, the linked resource strings are
+      separated by a newline.
+- Function `project_profiles_to_products_dt` calls function
+  `data.table::rbindlist` with option `fill=TRUE` to account for
+  projects without a product. This need is caused by using function
+  `seq` instead of `seq_along` in the in the inner `for` loop of
+  function `project_profiles_to_products_dt`. Specifically, when
+  `seq(0)` is called, it returns a vector of the two values `1` and
+  `0` (in that order).
+  - *FIX:* Replace function `seq` with `seq_along`.
+  - *FIX:* Remove option `fill=TRUE` in function call
+    `data.table::rbindlist`.
+- Remove last `/` from constant `REF_PROFILE_URL`. The function
+  `file.path` does not remove the redundant path component separator
+  when joining path components.
 
 ### Changed
 
@@ -58,11 +86,40 @@ scheme as implemented by the
 - Set all `rest_svc_url` function arguments to
   `getOption("dr.rest_url")`.
   - Revise man docuements to reflect this change.
+- In function `project_profiles_to_products_dt`:
+  - Rename function `lr_list_to_vector_str` to `lr_list_to_str`.
+  - Rename function `units_vector_to_vector_str` to
+    `units_vector_to_str`.
+  - Replace function `seq` by `seq_along`.
+  - Revise function `lr_list_to_str` to properly format linked
+    resources string.
+  - Remove option `fill=TRUE` in funciton call `data.table::rbindlist`.
+  - Replace `NULL`s with `NA`s in `product` variable so that
+    `as.data.table` will not drop the list elements with a `NULL`.
+- In file `DESCRIPTION`:
+  - Change `Depends` to `Imports`.
+  - Make license `The Unlicense` explicit.
+  - Add `URL` field.
+- In file `NAMESPACE`:
+  - Add `import(data.table)`; required because `data.table` is now
+    listed in file `DESCRIPTION`s `Imports` field.
+- In function `get_prog_proj_products_dt`:
+  - Comment out field `typeName` (value is the same as
+    `referenceType`) from returned `data.table`. Updated help
+    document.
+  - Make `program_name` optionally the program Reference citation name
+    (default) or the user-provided argument value.
+  - Add missing elements from DataStore project-products to
+    `data.table`. Order columns and create new copy of `data.table` by
+    assignment.
+- In function `get_program_project_profiles`:
+  - Assign attributes `program_ref_id` and `program_name` to
+    `project_profiles` list object. Update related help documents.
 
 ### Removed
 
-- Remove 'auth_type' parameter from functions and help docs and vignettes.
-
+- Remove `auth_type` parameter from functions and help docs and vignettes.
+- Remove global variable `REST_SVC_PUBLIC_URL`.
 
 ## [1.1] - 2025-02-07
 
