@@ -14,49 +14,62 @@ program-project-profiles for a particular DataStore Program Reference
 and return as a `data.table`.
 
 
-```r
-## Created by: Nick Bywater
-## Government agency: National Park Service, CAKN
-## License: The Unlicense (Public Domain). See: https://unlicense.org/.
-
-CAKN_PROGRAM_REF_ID <- 2210836
-ARCN_PROGRAM_REF_ID <- 2208369
-
-REST_SVC_PUBLIC_URL <- "https://irmaservices.nps.gov/datastore/v7/rest/"
-
-## Global option 'dr.rest_url', set by default, to public REST URL.
-## But explicitly set for this example.
-set_option_rest_url(REST_SVC_PUBLIC_URL)
-
-cakn_dt <- get_prog_proj_products_dt(CAKN_PROGRAM_REF_ID,
-                                     program_name="CAKN")
-
-arcn_dt <- get_prog_proj_products_dt(ARCN_PROGRAM_REF_ID,
-                                     program_name="ARCN")
-
-## Remove linkedResources; should probably written to another table.
-arcn_dt <- arcn_dt[, -c("linkedResources")]
-cakn_dt <- cakn_dt[, -c("linkedResources")]
-
-## Apply data.table union to arcn_dt and cakn_dt.
-arcn_cakn_union_dt <- funion(arcn_dt, cakn_dt, all=TRUE)
-```
-An example that uses lower level functions to gather elemental data
-from profile and reference code search REST resources.
-
-
-```r
-## example_script.R
-## Version 1.1, 2025-February
-## Initial release month: 2025-January
+``` r
+## Example 1
 
 ## Created by: Nick Bywater
 ## Government agency: National Park Service, CAKN
 ## License: The Unlicense (Public Domain). See: https://unlicense.org/.
 
 library(datastore.rest)
+library(data.table) ## This example uses data.table objects.
 
-write_program_ref_product_profiles <- function(program_ref_id, rest_svc_url) {
+example_1 <- function() {
+
+    CAKN_PROGRAM_REF_ID <- 2210836
+    ARCN_PROGRAM_REF_ID <- 2208369
+
+    REST_SVC_PUBLIC_URL <- "https://irmaservices.nps.gov/datastore/v7/rest/"
+
+    ## Global option 'dr.rest_url', set by default, to public REST URL.
+    ## But explicitly set for this example.
+    set_option_rest_url(REST_SVC_PUBLIC_URL)
+
+    ## If the 'program_name' argument is not provided, then the program
+    ## Reference citation name is used, by default, as the value for
+    ## 'program_name' in the data.table output.
+    cakn_dt <- get_prog_proj_products_dt(CAKN_PROGRAM_REF_ID)
+
+    ## In this case, we supply our own 'program_name' value.
+    arcn_dt <- get_prog_proj_products_dt(ARCN_PROGRAM_REF_ID,
+                                         program_name="ARCN")
+
+    ## Remove linkedResources; should probably written to another table.
+    arcn_dt <- arcn_dt[, -c("linkedResources")]
+    cakn_dt <- cakn_dt[, -c("linkedResources")]
+
+    ## Apply data.table union to arcn_dt and cakn_dt.
+    arcn_cakn_union_dt <- funion(arcn_dt, cakn_dt, all=TRUE)
+
+    return(arcn_cakn_union_dt)
+}
+```
+
+An example that uses lower level functions to gather elemental data
+from profile and reference code search REST resources.
+
+
+``` r
+## Example 2
+
+## Created by: Nick Bywater
+## Government agency: National Park Service, CAKN
+## License: The Unlicense (Public Domain). See: https://unlicense.org/.
+
+library(datastore.rest)
+library(data.table) ## This example uses data.table objects.
+
+write_prog_proj_ref_products <- function(program_ref_id, rest_svc_url) {
 
     cat(paste0("Collecting PROGRAM-REFERENCE-ID '", program_ref_id, "' PROJECT-REFERENCE-PROFILEs...\n"))
 
@@ -100,12 +113,98 @@ main <- function() {
     REST_SERVICE_SECURE <- "https://irmaservices.nps.gov/datastore-secure/v7/rest/"
 
     ## Public REST service.
-    write_program_ref_product_profiles(CAKN_PROGRAM_REF_ID,
-                                       REST_SERVICE_PUBLIC)
+    write_prog_proj_ref_products(CAKN_PROGRAM_REF_ID, REST_SERVICE_PUBLIC)
 
     ## Secure REST service.
-    ## write_program_ref_product_profiles(CAKN_PROGRAM_REF_ID,
-    ##                                    REST_SERVICE_SECURE)
+    ## write_prog_proj_ref_products(CAKN_PROGRAM_REF_ID, REST_SERVICE_SECURE)
 
+}
+```
+
+This example writes the data.table output to an Excel file using the R
+package `openxlsx`. It formats the columns `referenceUrl` and
+`project_ref_url` as hyperlinks, and it also removes the Orcid HTML
+tags from the citations column before writing the `data.table`.
+
+
+``` r
+## Example 3
+
+## Created by: Nick Bywater
+## Government agency: National Park Service, CAKN
+## License: The Unlicense (Public Domain). See: https://unlicense.org/.
+
+library(data.table) ## This example uses data.table objects.
+library(datastore.rest)
+library(openxlsx)
+
+write_prog_proj_ref_products <- function(products_dt, report_name, range="") {
+
+    today <- format(Sys.time(), "%Y-%m-%dT%H.%M.%OS3")
+
+    cat(paste0("Writing data to files...\n"))
+
+    fname <- paste0(report_name, today, ".xlsx")
+
+    class(products_dt$referenceUrl) <- "hyperlink"
+    class(products_dt$project_ref_url) <- "hyperlink"
+
+    write.xlsx(products_dt, fname, asTable = TRUE, tableStyle = "TableStyleMedium2")
+
+    cat(paste0("DONE!\n"))
+}
+
+main <- function() {
+
+    MOJN_PROGRAM_REF_ID <- 2207703
+
+    ## Global option 'dr.rest_url', set by default, to public REST URL.
+    ## To set to secure rest service, uncomment the following two lines.
+
+    ## REST_SVC_SECURE_URL <- "https://irmaservices.nps.gov/datastore-secure/v7/rest/"
+    ## set_option_rest_url(REST_SVC_SECURE_URL)
+
+    mojn_dt <- get_prog_proj_products_dt(MOJN_PROGRAM_REF_ID)
+
+    ## To remove 'linkedResources' column, uncomment the following
+    ## line. The linked resources strings are separated by newlines.
+
+    ## mojn_dt[, "linkedResources"] <- NULL
+
+    ## Remove Orcid tags for cleaner citation values.
+    remove_orcid_tags(mojn_dt)
+
+    ## Order columns
+    setcolorder(mojn_dt,
+                c("program_name",
+                  "program_ref_id",
+                  "project_title",
+                  "project_ref_id",
+                  "project_ref_url",
+
+                  "referenceId",
+                  "referenceUrl",
+                  "newVersion",
+                  "referenceType",
+                  "dateOfIssue",
+                  "lifecycle",
+                  "visibility",
+                  "fileCount",
+                  "fileAccess",
+                  "title",
+                  "citation",
+                  "isDOI",
+                  "units"))
+
+    write_prog_proj_ref_products(mojn_dt, "products_mojn_")
+}
+
+remove_orcid_tags <- function(dt) {
+    ## Remove orcid names.
+    orcid_citations <- dt[grepl("orcid", dt$citation), , which=TRUE]
+    clean_citation <- gsub(" <.*?>   ", "", dt$citation[i=orcid_citations])
+    dt[i=orcid_citations, citation := clean_citation]
+
+    return(dt)
 }
 ```
