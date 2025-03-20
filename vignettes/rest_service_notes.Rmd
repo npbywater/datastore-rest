@@ -2,7 +2,7 @@
 title: "IRMA/DataStore REST service notes"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Rest service notes}
+  %\VignetteIndexEntry{REST service notes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
