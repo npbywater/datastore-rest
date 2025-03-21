@@ -241,7 +241,7 @@ get_program_project_profiles <- function(program_ref_id, rest_svc_url=getOption(
     project_profiles <- get_ref_profiles(project_ref_ids, rest_svc_url, simplify_to_df=FALSE)
 
     attributes(project_profiles)$program_ref_id <- program_ref_id
-    attributes(project_profiles)$program_name <- program$citation
+    attributes(project_profiles)$program_name <- trimws(program$citation)
 
     class(project_profiles) <- "project"
 
