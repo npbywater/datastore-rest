@@ -28,7 +28,7 @@ The progam Reference:
 \item{program_ref_id}{the program Reference ID.}
 
 The project of a program Reference:
-\item{project_title}{the title of a project that belongs to a program.}
+\item{project_name}{the name (title) of a project that belongs to a program.}
 \item{project_ref_id}{the project reference ID.}
 \item{project_ref_url}{the project Reference URL.}
 

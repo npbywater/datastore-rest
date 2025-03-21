@@ -178,7 +178,7 @@ get_prog_proj_products_dt <- function(program_ref_id, rest_svc_url=getOption("dr
     ## Re-order the columns.
     ret_dt <- project_products_dt[, c("program_name",
                                       "program_ref_id",
-                                      "project_title",
+                                      "project_name",
                                       "project_ref_id",
                                       "project_ref_url",
 
@@ -316,7 +316,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
 
                 dt_list[[m]] <- data.table::as.data.table(product)
 
-                dt_list[[m]][, c("project_ref_id", "project_title") :=
+                dt_list[[m]][, c("project_ref_id", "project_name") :=
                                    .(project_list$referenceId,
                                      project_list$bibliography$title)]
 
