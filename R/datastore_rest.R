@@ -295,7 +295,7 @@ project_profiles_to_products_dt <- function(project_profiles) {
     }
 
     dt_list <- list()
-    m <- 1
+    m <- 1L
 
     for (i in seq_along(project_profiles)) {
         project_group <- project_profiles[[i]]
@@ -345,7 +345,7 @@ get_ref_profiles <- function(ref_ids, rest_svc_url=getOption("dr.rest_url"), sim
     ## ref_id_groups is a list of these vectors.
     ref_id_groups <- group_ref_ids(ref_ids)
 
-    i <- 1
+    i <- 1L
 
     for (ref_ids in ref_id_groups) {
         profiles <- get_ref_profiles_by_ref_ids(ref_ids, rest_svc_url, simplify_to_df)
@@ -370,8 +370,8 @@ get_ref_profiles_by_ref_ids <- function(ref_ids, rest_svc_url=getOption("dr.rest
 ## REF_CODE_SEARCH_COMP.
 group_ref_ids <- function(ref_ids) {
 
-    from <- 1
-    to <- 25
+    from <- 1L
+    to <- 25L
     ref_id_count <- length(ref_ids)
     ref_group_count <- ceiling(ref_id_count / to)
     ref_id_list <- list()
@@ -406,7 +406,7 @@ get_refs_by_ref_search <- function(ref_ids, rest_svc_url=getOption("dr.rest_url"
     ## ref_id_groups is a list of these vectors.
     ref_id_groups <- group_ref_ids(ref_ids)
 
-    i <- 1
+    i <- 1L
     for (ref_ids in ref_id_groups) {
         reference <- get_refs_content(ref_ids, REF_CODE_SEARCH, rest_svc_url, simplify_to_df)
 
